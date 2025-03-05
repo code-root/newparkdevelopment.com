@@ -48,10 +48,7 @@
                                     <label class="form-label" for="price">Price</label>
                                     <input type="number" id="price" name="price" class="form-control" value="{{ $project->price }}" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label" for="url">url</label>
-                                    <input type="txt" id="url" name="url" class="form-control" value="{{ $project->url }}" required>
-                                </div>
+          
                                 <div class="col-md-12 mt-3">
                                     <label class="form-label" for="images">Images</label>
                                     <input type="file" id="images" name="images[]" class="form-control" multiple>

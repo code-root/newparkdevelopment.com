@@ -105,7 +105,6 @@ class ProjectController extends Controller
 
         $item = Project::create([
             'name' => $name,
-            'url' => $request->url ?? '',
             'image' => $imagePath,
             'title' => $title,
             'tr_token' => $token,
@@ -146,7 +145,7 @@ class ProjectController extends Controller
     public function update(Request $request, $id)
     {
        $project = Project::findOrFail($id);
-       $project->update($request->only(['status', 'price', 'description', 'category_id' ,'url']));
+       $project->update($request->only(['status', 'price', 'description', 'category_id' ]));
 
         if ($request->hasFile('images')) {
             $firstImage = $request->file('images')[0];

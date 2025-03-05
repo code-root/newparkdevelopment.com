@@ -24,7 +24,6 @@ class Project extends Model
         'title',
         'description',
         'price',
-        'url' ,
         'image',
         'category_id',
         'status',

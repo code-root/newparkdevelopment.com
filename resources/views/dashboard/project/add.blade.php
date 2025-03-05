@@ -46,10 +46,7 @@
                                         <option value="0">Inactive</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label" for="url">url</label>
-                                    <input type="txt" id="url" name="url" class="form-control" value="" required>
-                                </div>
+          
                                 <div class="col-md-6">
                                     <label class="form-label" for="price">Price</label>
                                     <input type="number" id="price" name="price" class="form-control" value="1" >
