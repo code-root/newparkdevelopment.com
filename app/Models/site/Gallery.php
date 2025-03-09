@@ -1,18 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\site;
 
-use App\Models\site\Category;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model
+class Gallery extends Model
 {
     use HasFactory;
-
     protected $primaryKey = 'id';
-
-    protected $table = 'projects';
 
     /**
      * The attributes that are mass assignable.
@@ -20,19 +16,10 @@ class Project extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'title',
-        'description',
-        'count',
-        'category_id',
-        'status',
         'image',
+        'status',
+        'category_id',
     ];
-
-    public function images()
-    {
-        return $this->hasMany(ProjectImage::class);
-    }
 
     /**
      * The attributes that should be cast to native types.
@@ -44,14 +31,10 @@ class Project extends Model
     ];
 
     /**
-     * Get the category associated with the project.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * Get the category that owns the gallery.
      */
     public function category()
     {
-        return $this->hasOne(Category::class, 'id', 'category_id');
+        return $this->belongsTo(Category::class);
     }
-
-   
 }

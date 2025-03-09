@@ -18,10 +18,13 @@ use App\Http\Controllers\dashboard\site\ProjectController;
 use App\Http\Controllers\dashboard\site\CategoryController;
 use App\Http\Controllers\dashboard\site\HomeController;
 use App\Http\Controllers\dashboard\site\SettingsController;
+use App\Http\Controllers\dashboard\site\SuccessPartnerController;
 use App\Http\Controllers\dashboard\site\TranslationController;
 use App\Http\Controllers\dashboard\BlogController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\dashboard\GalleryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -117,16 +120,39 @@ Route::post('storeText', function (Request $request) {
         });
 
 
+        Route::group(['prefix' => 'success-partners'], function () {
+            Route::get('', [SuccessPartnerController::class, 'index'])->name('success_partners.index');
+            Route::post('/store', [SuccessPartnerController::class, 'store'])->name('success_partners.store');
+            Route::get('/edit/{id}', [SuccessPartnerController::class, 'edit'])->name('success_partners.edit');
+            Route::put('/update/{id}', [SuccessPartnerController::class, 'update'])->name('success_partners.update');
+            Route::delete('/destroy/{id}', [SuccessPartnerController::class, 'destroy'])->name('success_partners.destroy');
+            Route::get('view-image-success-partners/', [SuccessPartnerController::class, 'viewImage'])->name('api.image.partners');
+
+        });
+
+
+        Route::prefix('galleries')->group(function () {
+            Route::get('/', [GalleryController::class, 'index'])->name('gallery.index');
+            Route::get('/getData', [GalleryController::class, 'getData'])->name('gallery.data');
+            Route::post('/create', [GalleryController::class, 'create'])->name('gallery.create');
+            Route::get('/edit/{id}', [GalleryController::class, 'edit'])->name('gallery.edit');
+            Route::post('/update/{id}', [GalleryController::class, 'update'])->name('gallery.update');
+            Route::delete('/destroy', [GalleryController::class, 'destroy'])->name('gallery.destroy');
+            Route::post('/toggle-status', [GalleryController::class, 'toggleStatus'])->name('gallery.toggleStatus');
+        });
+
+
+
         Route::resource('users', UserController::class);
         Route::resource('roles', RoleController::class);
 
 
         Route::group(['prefix' => 'pages'], function () {
+            Route::get('/', [PageController::class, 'index'])->name('pages.index');
             Route::get('add', [PageController::class, 'create'])->name('pages.create');
             Route::post('create', [PageController::class, 'createPage'])->name('pages.save');
             Route::post('store', [PageController::class, 'store'])->name('pages.store');
             Route::get('/edit/{id}', [PageController::class, 'edit'])->name('pages.edit');
-            Route::get('/', [PageController::class, 'index'])->name('pages.index');
             Route::get('/pages/id', [PageController::class, 'show'])->name('pages.show');
             Route::post('/pages/update', [PageController::class, 'update'])->name('pages.update');
             Route::delete('/pages/destroy/{id}', [PageController::class, 'destroy'])->name('pages.destroy');
@@ -143,6 +169,8 @@ Route::post('storeText', function (Request $request) {
             Route::delete('/destroy', [ProjectController::class, 'destroy'])->name('project.destroy');
             Route::post('/toggle-status', [ProjectController::class, 'toggleStatus'])->name('project.toggleStatus');
             Route::post('get-translations', [ProjectController::class, 'getTranslations'])->name('project.getTranslations');
+            Route::post('delete', [ProjectController::class, 'projectImageDelete'])->name('projectImage.delete');
+
         });
 
 

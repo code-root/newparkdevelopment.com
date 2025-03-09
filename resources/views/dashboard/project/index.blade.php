@@ -44,7 +44,6 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Title</th>
-                                <th>Price</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -77,7 +76,6 @@ $(document).ready(function() {
             { data: 'id' },
             { data: 'name' },
             { data: 'title' },
-            { data: 'price' },
             { data: 'status' },
             {
                 data: 'id',
@@ -111,40 +109,6 @@ $(document).ready(function() {
             },
             success: function(response) {
                 table.ajax.reload();
-            }
-        });
-    });
-
-    $('#submitForm').click(function(e) {
-        e.preventDefault();
-        var descriptionContent = tinymce.get('description').getContent();
-        var formData = new FormData($('#store-form')[0]);
-        formData.append('description', descriptionContent);
-
-        $.ajax({
-            url: "{{ route('project.create') }}",
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                $('#add-new-record').modal('hide');
-                $('.form-control').removeClass('is-invalid');
-                Lobibox.notify('success', {
-                    title: 'Success',
-                    msg: 'project added successfully.'
-                });
-                $('#store-form')[0].reset();
-                table.ajax.reload();
-            },
-            error: function(xhr) {
-                var errors = JSON.parse(xhr.responseText).errors;
-                var errorMessages = '';
-                $.each(errors, function(key, value) {
-                    $('#' + key).addClass('is-invalid');
-                    errorMessages += '<li>' + value.join(', ') + '</li>';
-                });
-                $('#error-messages').html('<div class="alert alert-danger"><ul>' + errorMessages + '</ul></div>');
             }
         });
     });

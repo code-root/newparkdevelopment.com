@@ -19,14 +19,21 @@ class SettingsController extends Controller
             'about_intro' => $settings['about_intro'] ?? '',
             'about_mission' => $settings['about_mission'] ?? '',
             'faq_title' => $settings['faq_title'] ?? '',
-            'submit_request' => $settings['submit_request'] ?? '',
-            'submit_request_label' => $settings['submit_request_label'] ?? '',
             'banner_title' => $settings['banner_title'] ?? '',
             'banner_description' => $settings['banner_description'] ?? '',
             'banner_button_text' => $settings['banner_button_text'] ?? '',
             'site_name' => $settings['site_name'] ?? '',
             'phone' => $settings['phone'] ?? '',
             'email' => $settings['email'] ?? '',
+            'hero_subtitle' => $settings['hero_subtitle'] ?? '',
+            'hero_title_1' => $settings['hero_title_1'] ?? '',
+            'hero_title_2' => $settings['hero_title_2'] ?? '',
+            'hero_description' => $settings['hero_description'] ?? '',
+            'hero_cta' => $settings['hero_cta'] ?? '',
+            'rental_stats_count' => $settings['rental_stats_count'] ?? '',
+            'rental_stats_text' => $settings['rental_stats_text'] ?? '',
+            'buy_stats_count' => $settings['buy_stats_count'] ?? '',
+            'buy_stats_text' => $settings['buy_stats_text'] ?? '',
         ]);
     }
 
@@ -49,11 +56,6 @@ class SettingsController extends Controller
             'about_intro' => 'nullable|string',
             'about_mission' => 'nullable|string',
             'faq_title' => 'nullable|string|max:255',
-            'submit_request' => 'nullable|string|max:255',
-            'submit_request_label' => 'nullable|string|max:255',
-            'banner_title' => 'nullable|string|max:255',
-            'banner_description' => 'nullable|string',
-            'banner_button_text' => 'nullable|string|max:255',
             'facebook' => 'nullable|string|max:255',
             'twitter' => 'nullable|string|max:255',
             'instagram' => 'nullable|string|max:255',
@@ -63,7 +65,6 @@ class SettingsController extends Controller
             'tiktok' => 'nullable|string|max:255',
             'google_maps' => 'nullable|string',
             'whatsapp' => 'nullable|string|max:255',
-
         ]);
 
         $language = $request->input('language');
@@ -76,7 +77,6 @@ class SettingsController extends Controller
 
         // رفع الملفات
         $this->updateFile($request, 'logo', 'logos');
-
 
         return response()->json(['success' => 'Settings updated successfully.']);
     }
@@ -109,7 +109,6 @@ class SettingsController extends Controller
             'email',
             'site_name',
             'facebook',
-            'slider' ,
             'twitter',
             'instagram',
             'linkedin',
@@ -118,7 +117,6 @@ class SettingsController extends Controller
             'tiktok',
             'google_maps',
             'whatsapp',
-            'dark_mode',
         ];
     }
 }

@@ -63,14 +63,6 @@
                         {{ Form::label('logo', 'Logo') }}
                         {{ Form::file('logo', ['class' => 'form-control']) }}
                     </div>
-                    <div class="col-md-4">
-                        {{ Form::label('about_image_1', 'About Us Image One') }}
-                        {{ Form::file('about_image_1', ['class' => 'form-control']) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ Form::label('about_image_2', 'About Us Image Two') }}
-                        {{ Form::file('about_image_2', ['class' => 'form-control']) }}
-                    </div>
                 </div>
 
                 <!-- وصف الموقع -->
@@ -99,33 +91,60 @@
 
 
 
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        {{ Form::label('submit_request', 'submit_request') }}
-                        {{ Form::text('submit_request', $settings['submit_request'] ?? '', ['class' => 'form-control', 'id' => 'submit_request']) }}
+                <div class="mb-4">
+                    <h3 class="mb-3">Hero Section</h3>
+                    
+                    <!-- العنوان الفرعي -->
+                    <div class="mb-3">
+                        {{ Form::label('hero_subtitle', 'العنوان الفرعي') }}
+                        {{ Form::text('hero_subtitle', $basic['hero_subtitle'] ?? 'اكتشف العقارات الآن بكل سهولة', ['class' => 'form-control', 'id' => 'hero_subtitle']) }}
                     </div>
-                    <div class="col-md-4">
-                        {{ Form::label('submit_request_label', 'submit_request_label') }}
-                        {{ Form::text('submit_request_label', $settings['submit_request_label'] ?? '', ['class' => 'form-control', 'id' => 'submit_request_label']) }}
-                    </div>
-              
 
+                    <!-- العنوان الرئيسي الأول -->
+                    <div class="mb-3">
+                        {{ Form::label('hero_title_1', 'العنوان الرئيسي الأول') }}
+                        {{ Form::text('hero_title_1', $basic['hero_title_1'] ?? 'سواء كنت تبحث عن شراء أو إيجار', ['class' => 'form-control', 'id' => 'hero_title_1']) }}
+                    </div>
+
+                    <!-- العنوان الرئيسي الثاني -->
+                    <div class="mb-3">
+                        {{ Form::label('hero_title_2', 'العنوان الرئيسي الثاني') }}
+                        {{ Form::text('hero_title_2', $basic['hero_title_2'] ?? 'لدينا أفضل الخيارات لك', ['class' => 'form-control', 'id' => 'hero_title_2']) }}
+                    </div>
+
+                    <!-- النص الوصفي -->
+                    <div class="mb-3">
+                        {{ Form::label('hero_description', 'النص الوصفي') }}
+                        {{ Form::text('hero_description', $basic['hero_description'] ?? 'العقار المناسب لك في انتظارك.. تصفح أحدث العروض!', ['class' => 'form-control', 'id' => 'hero_description']) }}
+                    </div>
+
+                    <!-- زر الدعوة إلى الإجراء -->
+                    <div class="mb-3">
+                        {{ Form::label('hero_cta', 'زر الدعوة إلى الإجراء (CTA)') }}
+                        {{ Form::text('hero_cta', $basic['hero_cta'] ?? 'تواصل معنا الآن', ['class' => 'form-control', 'id' => 'hero_cta']) }}
+                    </div>
+
+                    <!-- إحصائيات العقارات للإيجار -->
+                    <div class="mb-3">
+                        {{ Form::label('rental_stats_count', 'عدد الشقق المتاحة للإيجار') }}
+                        {{ Form::text('rental_stats_count', $basic['rental_stats_count'] ?? '500+', ['class' => 'form-control', 'id' => 'rental_stats_count']) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ Form::label('rental_stats_text', 'وصف إحصائيات الإيجار') }}
+                        {{ Form::text('rental_stats_text', $basic['rental_stats_text'] ?? 'شقة بمساحات مختلفة للإيجار', ['class' => 'form-control', 'id' => 'rental_stats_text']) }}
+                    </div>
+
+                    <!-- إحصائيات العقارات للشراء -->
+                    <div class="mb-3">
+                        {{ Form::label('buy_stats_count', 'عدد الشقق المتاحة للشراء') }}
+                        {{ Form::text('buy_stats_count', $basic['buy_stats_count'] ?? '500+', ['class' => 'form-control', 'id' => 'buy_stats_count']) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ Form::label('buy_stats_text', 'وصف إحصائيات الشراء') }}
+                        {{ Form::text('buy_stats_text', $basic['buy_stats_text'] ?? 'شقة بمساحات مختلفة للشراء', ['class' => 'form-control', 'id' => 'buy_stats_text']) }}
+                    </div>
                 </div>
 
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        {{ Form::label('banner_title', 'Banner Title') }}
-                        {{ Form::text('banner_title', $settings['banner_title'] ?? '', ['class' => 'form-control', 'id' => 'banner_title']) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ Form::label('banner_description', 'Banner Description') }}
-                        {{ Form::textarea('banner_description', $settings['banner_description'] ?? '', ['class' => 'form-control', 'rows'=> '2', 'id' => 'banner_description']) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ Form::label('banner_button_text', 'Banner Button Text') }}
-                        {{ Form::text('banner_button_text', $settings['banner_button_text'] ?? '', ['class' => 'form-control', 'id' => 'banner_button_text']) }}
-                    </div>
-                </div>
 
                 <!-- روابط التواصل الاجتماعي -->
                 <div class="row mb-3">
@@ -167,19 +186,23 @@ $(document).ready(function() {
         $('#about_intro').val(data.about_intro);
         $('#about_mission').val(data.about_mission);
         $('#faq_title').val(data.faq_title);
-        $('#submit_request').val(data.submit_request);
-        $('#submit_request_label').val(data.submit_request_label);
         $('#banner_title').val(data.banner_title);
         $('#banner_description').val(data.banner_description);
         $('#banner_button_text').val(data.banner_button_text);
         $('#site_name').val(data.site_name);
         $('#phone').val(data.phone);
         $('#email').val(data.email);
+        $('#hero_subtitle').val(data.hero_subtitle);
+        $('#hero_title_1').val(data.hero_title_1);
+        $('#hero_title_2').val(data.hero_title_2);
+        $('#hero_description').val(data.hero_description);
+        $('#hero_cta').val(data.hero_cta);
+        $('#rental_stats_count').val(data.rental_stats_count);
+        $('#rental_stats_text').val(data.rental_stats_text);
+        $('#buy_stats_count').val(data.buy_stats_count);
+        $('#buy_stats_text').val(data.buy_stats_text);
 
-
-
-
-            }
+        }
         });
     });
 

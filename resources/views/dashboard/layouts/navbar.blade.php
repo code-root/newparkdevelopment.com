@@ -23,7 +23,19 @@
                         </a>
                     </li>
 
+                    <li class="menu-item" data-path="{{ route('gallery.index') }}">
+                        <a href="{{ route('gallery.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-gallery"></i>
+                            <div class="text-truncate" data-i18n="gallery">gallery</div>
+                        </a>
+                    </li>
 
+                <li class="menu-item" data-path="{{ route('pages.index') }}">
+                    <a href="{{ route('pages.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-page"></i>
+                        <div class="text-truncate" data-i18n="Pages">Pages</div>
+                    </a>
+                </li>
 
                     {{-- @endcan --}}
 
@@ -127,11 +139,20 @@
                     @endcan
 
                     <li class="menu-item">
+                        <a href="{{ route('success_partners.index') }}" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-party"></i>
+                            <div class="text-truncate" data-i18n="Success Partners">Success Partners </div>
+                        </a>
+                    </li>
+
+                    <li class="menu-item">
                         <a href="{{ route('blog.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-image"></i>
                             <div class="text-truncate" data-i18n="Blogs ">Blogs </div>
                         </a>
                     </li>
+
+                    
 
                     <!-- FAQ -->
                     @can('view-faq')

@@ -12,13 +12,8 @@ class SuccessPartner extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
             'name',
-            'tr_token',
             'logo',
     ];
 
 
-    public function language()
-    {
-        return $this->belongsTo(Translation::class, 'token', 'tr_token');
-    }
 }

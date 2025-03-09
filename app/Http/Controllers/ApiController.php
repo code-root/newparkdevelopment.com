@@ -26,7 +26,6 @@ class ApiController extends Controller
         // $socials['google_maps'] = $settings['google_maps'] ??  '';
         // $socials['x'] = $settings['x'] ??  '';
 
-        $testimonial = Testimonial::get();
 
         $faqs = Faq::all()->map(function ($faq) {
             return [
@@ -43,13 +42,10 @@ class ApiController extends Controller
         });
 
         // $sections = Section::with(['pages'])->where('status', 1)->get();
-        $partners = SuccessPartner::get();
         return response()->json([
             'settings' => $settings,
             'socials' => $socials,
             'faqs' => $faqs,
-            'partners' => $partners,
-            'testimonial' => $testimonial,
         ]);
     }
 
@@ -86,9 +82,6 @@ class ApiController extends Controller
         public function getBlogId(Request $request)
         {
             $blog = Blog::where('id', $request->blog_id)->first();
-
-
-
             return ['blog' => $blog ?? 'Blog not found'];
         }
 
@@ -104,9 +97,27 @@ class ApiController extends Controller
 
     public function showPage($id)
     {
-
         $page = Page::findOrFail($id);
         return response()->json($page);
+    }
+
+
+
+    public function getPage()
+    {
+        $page = Page::first();
+        return [
+            'page' => $page ?? 'Page not found'
+        ];
+    }
+
+    public function successPartners()
+    {
+        $partners = SuccessPartner::all();
+        return response()->json([
+            'status' => true,
+            'data' => $partners,
+        ]);
     }
 
     public function viewImage(Request $request, $modelName)

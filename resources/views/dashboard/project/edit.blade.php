@@ -8,94 +8,76 @@
             <span class="text-muted fw-light">Edit Project</span>
         </h4>
 
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif
-
-        @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif
+        <div id="alert-container"></div>
 
         <div class="row">
             <div class="col-12 col-lg-8">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">project Information</h5>
+                        <h5 class="card-title mb-0">Project Information</h5>
                     </div>
-                    <form method="POST" action="{{ route('project.update', $project->id) }}" enctype="multipart/form-data">
+                    <form id="edit-project-form" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label" for="status">Status</label>
-                                    <select id="status" name="status" class="form-control" required>
-                                        <option value="1" {{ $project->status == 1 ? 'selected' : '' }}>Active</option>
-                                        <option value="0" {{ $project->status == 0 ? 'selected' : '' }}>Inactive</option>
-                                    </select>
+                                    <label class="form-label" for="name">Name</label>
+                                    <input type="text" id="name" name="name" class="form-control" value="{{ $project->name }}" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label" for="price">Price</label>
-                                    <input type="number" id="price" name="price" class="form-control" value="{{ $project->price }}" required>
+                                    <label class="form-label" for="title">Title</label>
+                                    <input type="text" id="title" name="title" class="form-control" value="{{ $project->title }}" required>
                                 </div>
-          
-                                <div class="col-md-12 mt-3">
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label class="form-label" for="description">Description</label>
+                                    <textarea id="description" name="description" class="form-control" rows="4" required>{{ $project->description }}</textarea>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="count">Count</label>
+                                    <input type="number" id="count" name="count" class="form-control" value="{{ $project->count }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="category_id">Category</label>
+                                    <select id="category_id" name="category_id" class="form-control" required>
+                                        <option value="" disabled selected>Select Category</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ $category->id == $project->category_id ? 'selected' : '' }}>{{ $category->title }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="status">Status</label>
+                                    <select id="status" name="status" class="form-control" required>
+                                        <option value="active" {{ $project->status == 'active' ? 'selected' : '' }}>Active</option>
+                                        <option value="inactive" {{ $project->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
                                     <label class="form-label" for="images">Images</label>
                                     <input type="file" id="images" name="images[]" class="form-control" multiple>
                                     <div class="mt-3">
-                                        {{-- @($project->images as $image) --}}
+                                        @foreach($project->images as $image)
                                         <div class="image-preview" style="display: inline-block; position: relative;">
-                                            <img src="{{ asset('/storage/app/public/' . $project->image) }}" alt="project Image" class="img-thumbnail" style="width: 100px; height: 100px;">
-                                            <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{  $project->id}}" style="position: absolute; top: 0; right: 0;">&times;</button>
+                                            <img src="{{ asset('/storage/app/public/' . $image->path) }}" alt="Project Image" class="img-thumbnail" style="width: 100px; height: 100px;">
+                                            <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ $image->id }}" style="position: absolute; top: 0; right: 0;">&times;</button>
                                         </div>
-                                        {{-- @endforeach --}}
+                                        @endforeach
                                     </div>
                                 </div>
-                                <input type="hidden" id="token" name="token" value="{{ $project->token }}" class="form-control">
                             </div>
-                            <div class="col-md-12 mt-3">
-                                <label class="form-label" for="category_id">Category</label>
-                                <select id="category_id" name="category_id" class="form-control" required>
-                                    <option value="" disabled selected>Select Category</option>
-                                    @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $category->id == $project->category_id ? 'selected' : '' }} >{{ $category->title }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <h5 class="mt-4">Edit Project Texts</h5>
-                            <div class="mb-3">
-                                <label class="form-label" for="language">Select Language</label>
-                                <select id="language" name="language_id" class="form-control" required>
-                                    @foreach($languages as $language)
-                                    <option value="{{ $language->id }}" {{ defaultLanguage() == $language->id ? 'selected' : '' }}>{{ $language->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div id="language-fields">
-                                @foreach ($txt as $key => $field)
-                                <div class="language-row mb-3">
-                                    <label class="form-label mt-2" for="{{ $key }}">{{ $field['label'] }}</label>
-                                    @if ($field['type'] === 'input')
-                                    <input type="text" name="{{ $key }}[{{ defaultLanguage() }}]" class="form-control" value="{{ $project->translations->where('key', $key)->first()->value ?? '  ' }}" required>
-                                    @elseif ($field['type'] === 'textarea')
-                                    <textarea id="tt-description" name="{{ $key }}[{{ defaultLanguage() }}]" class="form-control" >{{ $project->translations->where('key', $key)->first()->value ?? '  ' }}</textarea>
-                                    @endif
-                                </div>
-                                @endforeach
-                            </div>
+                            <input type="hidden" id="token" name="token" value="{{ $project->token }}" class="form-control">
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Update project</button>
+                            <button type="submit" class="btn btn-primary">Update Project</button>
                         </div>
                     </form>
                 </div>
@@ -122,80 +104,30 @@ $(document).ready(function() {
         }
     });
 
-    function saveTextData() {
-        tinyMCE.triggerSave();
-
-        const selectedLanguage = $('#language').val();
-        const textData = {
-            language_id: selectedLanguage,
-            token: "{{ $project->tr_token }}",
-            description: tinyMCE.get('tt-description').getContent(),
-            meta: $('input[name="meta[]"]').val(),
-            name: $('input[name="name[]"]').val()
-        };
+    $('#edit-project-form').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
 
         $.ajax({
-            url: "{{ route('storeText') }}",
+            url: "{{ route('project.update', $project->id) }}",
             type: 'POST',
-            data: textData,
+            data: formData,
+            contentType: false,
+            processData: false,
             success: function(response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'تم الحفظ بنجاح!',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                $('#alert-container').html('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                    response.success +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                    '</div>');
             },
             error: function(xhr) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'حدث خطأ أثناء الحفظ!',
-                    text: xhr.responseText
+                var errors = xhr.responseJSON.errors;
+                var errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert"><ul>';
+                $.each(errors, function(key, value) {
+                    errorHtml += '<li>' + value + '</li>';
                 });
-            }
-        });
-    }
-
-    $('#language').change(function() {
-        var languageId = $(this).val();
-        var itemId = {{ $project->id }};
-
-        $.ajax({
-            url: "{{ route('project.getTranslations') }}",
-            type: 'POST',
-            data: {
-                '_token': '{{ csrf_token() }}',
-                'language_id': languageId,
-                'item_id': itemId
-            },
-            success: function(translations) {
-                $('#language-fields').empty();
-
-                if (translations.length > 0) {
-                    translations.forEach(function(translation) {
-                        if (translation.key !== 'language_id' && translation.key !== 'token') {
-                            $('#language-fields').append(`
-                                <div class="language-row mb-3">
-                                    <label class="form-label mt-2" for="${translation.key}">${translation.key}</label>
-                                    <input type="text" name="${translation.key}[${translation.language_id}]" class="form-control" value="${translation.value || ''}" required>
-                                </div>
-                            `);
-                        }
-                    });
-                } else {
-                    @foreach ($txt as $key => $field)
-                        $('#language-fields').append(`
-                            <div class="language-row mb-3">
-                                <label class="form-label mt-2" for="{{ $key }}">{{ $field['label'] }}</label>
-                                @if ($field['type'] === 'input')
-                                    <input type="text" name="{{ $key }}[${languageId}]" class="form-control" value="" required>
-                                @elseif ($field['type'] === 'textarea')
-                                    <textarea name="{{ $key }}[${languageId}]" class="form-control" required></textarea>
-                                @endif
-                            </div>
-                        `);
-                    @endforeach
-                }
+                errorHtml += '</ul><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                $('#alert-container').html(errorHtml);
             }
         });
     });
@@ -203,7 +135,6 @@ $(document).ready(function() {
     $('.delete-image').click(function() {
         var imageId = $(this).data('id');
         var imageElement = $(this).closest('.image-preview');
-
         Swal.fire({
             title: 'هل أنت متأكد؟',
             text: 'لن تتمكن من استعادة هذه الصورة!',
@@ -233,7 +164,6 @@ $(document).ready(function() {
         });
     });
 });
-
 </script>
 @endsection
 @endsection

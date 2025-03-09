@@ -4,41 +4,39 @@ namespace App\Http\Controllers\dashboard\site;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\ProjectImage;
 use App\Models\site\Category;
 use App\Models\Translation;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\ProjectRequest;
+
 class ProjectController extends Controller
 {
-
-    public function getProjectRequest()
-    {
+    public function getProjectRequest() {
         $data = ProjectRequest::get();
-        return view('dashboard.offers.ProjectRequest' , compact('data'));
+        return view('dashboard.offers.ProjectRequest', compact('data'));
     }
-
 
     public function getProjectRequestsData() {
-    $data = ProjectRequest::query();
-    return DataTables::of($data)
-        ->addColumn('actions', function ($row) {
-            return '
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-cog"></i>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item edit-request" href="#" data-id="' . $row->id . '"><i class="fa fa-pencil"></i> Edit</a></li>
-                        <li><a class="dropdown-item delete-request" href="#" data-id="' . $row->id . '"><i class="fa fa-trash"></i> Delete</a></li>
-                    </ul>
-                </div>
-            ';
-        })
-        ->rawColumns(['actions'])
-        ->make(true);
+        $data = ProjectRequest::query();
+        return DataTables::of($data)
+            ->addColumn('actions', function ($row) {
+                return '
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-cog"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item edit-request" href="#" data-id="' . $row->id . '"><i class="fa fa-pencil"></i> Edit</a></li>
+                            <li><a class="dropdown-item delete-request" href="#" data-id="' . $row->id . '"><i class="fa fa-trash"></i> Delete</a></li>
+                        </ul>
+                    </div>
+                ';
+            })
+            ->rawColumns(['actions'])
+            ->make(true);
     }
-
 
     public function index()
     {
@@ -49,22 +47,7 @@ class ProjectController extends Controller
     {
         return view('dashboard.project.add')
             ->with('token', Translation::generateUniqueToken())
-            ->with('txt', Project::txt())
             ->with('categories', Category::get());
-    }
-
-
-    public function getTranslations(Request $request)
-    {
-        $languageId = $request->input('language_id');
-        $item_id = $request->input('item_id');
-
-        $translations = Translation::where('language_id', $languageId)
-            ->where('translatable_id', $item_id)
-            ->where('translatable_type', Project::class)
-            ->get();
-
-        return response()->json($translations);
     }
 
     public function getData(Request $request)
@@ -79,116 +62,116 @@ class ProjectController extends Controller
 
     public function create(Request $request)
     {
-        $token = $request->token;
-        $name = Translation::select('value')->where('key', 'name')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $title = Translation::select('value')->where('key', 'title')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $description = Translation::select('value')->where('key', 'description')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $category_id = $request->input('category_id', null);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'count' => 'required|integer',
+            'category_id' => 'required|integer|exists:categories,id',
+            'status' => 'required|string|in:active,inactive',
+            'price' => 'required|numeric',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
-        $translationExists = Translation::where('token', $token)->exists();
-
-        if (!$translationExists) {
-            return response()->json(['message' => 'Translation token not found'], 400);
-        }
-
-        // تحقق من وجود القيم في جدول translations
-        if (empty($name) || empty($title)) {
-            return response()->json(['message' => 'Name or Title translation not found'], 400);
-        }
-
-        // رفع أول صورة فقط وتخزين مسارها في حقل image
         $imagePath = 'default.png';
         if ($request->hasFile('images')) {
             $firstImage = $request->file('images')[0];
             $imagePath = $firstImage->store('project', 'public');
         }
 
-        $item = Project::create([
-            'name' => $name,
-            'image' => $imagePath,
-            'title' => $title,
-            'tr_token' => $token,
+        $project = Project::create([
+            'name' => $request->name,
+            'title' => $request->title,
+            'description' => $request->description,
+            'count' => $request->count,
+            'category_id' => $request->category_id,
             'status' => $request->status,
             'price' => $request->price,
-            'description' =>$description,
-            'category_id' => is_numeric($category_id) ? $category_id : null,
+            'image' => $imagePath,
         ]);
 
-        // رفع باقي الصور وتخزين مساراتها في جدول service_images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
                 if ($index > 0) {
-
                     $path = $image->store('project', 'public');
-                    $item->images()->create(['path' => $path]);
+                    ProjectImage::create([
+                        'project_id' => $project->id,
+                        'path' => $path,
+                    ]);
                 }
             }
         }
 
-        Translation::where('token', $token)->update([
-            'translatable_id' => $item->id,
-            'translatable_type' => Project::class,
-        ]);
-
-        return response()->json(['message' => 'Service added successfully', 'data' => $item]);
+        return response()->json(['message' => 'Project added successfully', 'data' => $project]);
     }
 
     public function edit($id)
     {
-         $project = Project::with(['translations'])->findOrFail($id);
-        $txt = Project::txt();
-        $categories  = Category::get();
-        $languages = Translation::all();
-        return view('dashboard.project.edit', compact('project', 'categories','txt', 'languages'));
+        $project = Project::with(['images'])->findOrFail($id);
+        $categories = Category::get();
+        return view('dashboard.project.edit', compact('project', 'categories'));
     }
 
     public function update(Request $request, $id)
     {
-       $project = Project::findOrFail($id);
-       $project->update($request->only(['status', 'price', 'description', 'category_id' ]));
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'count' => 'required|integer',
+            'category_id' => 'required|integer|exists:categories,id',
+            'status' => 'required|string|in:active,inactive',
+            'price' => 'required|numeric',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $project = Project::findOrFail($id);
+        $project->update($request->only(['name', 'title', 'description', 'count', 'category_id', 'status', 'price']));
 
         if ($request->hasFile('images')) {
             $firstImage = $request->file('images')[0];
             $imagePath = $firstImage->store('project', 'public');
-           $project->update('image' , $imagePath);
-        }
+            $project->update(['image' => $imagePath]);
 
-
-        foreach ($request->except(['_token', '_method']) as $key => $translations) {
-            if (is_array($translations)) {
-                foreach ($translations as $languageId => $value) {
-                    Translation::updateOrCreate(
-                        [
-                            'translatable_id' =>$project->id,
-                            'translatable_type' => Project::class,
-                            'language_id' => $languageId,
-                            'key' => $key,
-                        ],
-                        ['value' => $value, 'status' => 1]
-                    );
+            foreach ($request->file('images') as $index => $image) {
+                if ($index > 0) {
+                    $path = $image->store('project', 'public');
+                    ProjectImage::create([
+                        'project_id' => $project->id,
+                        'path' => $path,
+                    ]);
                 }
             }
         }
 
-        return redirect()->route('project.index')->with('success', 'Service updated successfully');
+        return redirect()->route('project.index')->with('success', 'Project updated successfully');
     }
 
     public function destroy(Request $request)
     {
-       $project = Project::findOrFail($request->id);
-       $project->delete();
+        $project = Project::findOrFail($request->id);
+        $project->delete();
 
-        return response()->json(['success' => 'Service deleted successfully.']);
+        return response()->json(['success' => 'Project deleted successfully.']);
     }
 
     public function toggleStatus(Request $request)
     {
-       $project = Project::findOrFail($request->id);
-       $project->status =$project->status == '1' ? '0' : '1';
-       $project->save();
+        $project = Project::findOrFail($request->id);
+        $project->status = $project->status == 'active' ? 'inactive' : 'active';
+        $project->save();
 
-        return response()->json(['success' => 'Service status updated successfully.']);
+        return response()->json(['success' => 'Project status updated successfully.']);
     }
 
-
+    public function projectImageDelete () 
+    {
+        $image = ProjectImage::find($request->id);
+        if ($image) {
+            Storage::delete($image->path);
+            $image->delete();
+            return response()->json(['success' => 'تم حذف الصورة بنجاح.']);
+        }
+        return response()->json(['error' => 'حدث خطأ أثناء الحذف.'], 500);
+    }
 }
