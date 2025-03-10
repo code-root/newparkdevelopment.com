@@ -31,12 +31,12 @@ class ApiController extends Controller
             return [
                 'question' => Translation::where('key', 'question')
                     ->where('token', $faq->tr_token)
-                    ->where('language_id', 1)
+                    ->where('language_id', defaultLanguage())
                     ->value('value') ?? '',
 
                 'answer' => Translation::where('key', 'answer')
                     ->where('token', $faq->tr_token)
-                    ->where('language_id', 1)
+                    ->where('language_id', defaultLanguage())
                     ->value('value') ?? '',
             ];
         });
@@ -95,20 +95,55 @@ class ApiController extends Controller
 
 
 
-    public function showPage($id)
+    public function showPage($id, Request $request)
     {
         $page = Page::findOrFail($id);
-        return response()->json($page);
+        $languageSuffix = $this->language($request);
+    
+        $d = 'description' . $languageSuffix;
+        $m = 'meta' . $languageSuffix;
+    
+        return response()->json([
+            'name' => $page->nameLanguage(),
+            'description' => $page->$d,
+            'meta' => $page->$m,
+        ]);
+    }
+
+    public function language(Request $request)
+    {
+        $language = $request->header('language', 'en');
+        if ($language === 'ar') {
+            return '_ar';
+        } else {
+            return '_en';
+        }
     }
 
 
 
-    public function getPage()
-    {
-        $page = Page::first();
-        return [
-            'page' => $page ?? 'Page not found'
-        ];
+    public function getPage(Request $request) {
+        $pages = Page::all();
+        $languageSuffix = $this->language($request);
+        $data = [];
+    
+        foreach ($pages as $page) {
+            // $d = 'description' . $languageSuffix;
+            $m = 'meta' . $languageSuffix;
+    
+            $data[] = [
+                'id' => $page->id,
+                'name' => $page->nameLanguage(),
+                // 'description' => $page->$d,
+                'meta' => $page->$m,
+            ];
+        }
+    
+        if (empty($data)) {
+            return response()->json(['error' => 'Pages not found'], 404);
+        }
+    
+        return response()->json($data);
     }
 
     public function successPartners()

@@ -40,8 +40,7 @@ Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestF
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
-
-
+Route::get('view-image-success-partners', [SuccessPartnerController::class, 'viewImage'])->name('api.image.partners');
 
 Route::post('storeText', function (Request $request) {
     $data = $request->all();
@@ -107,7 +106,7 @@ Route::post('storeText', function (Request $request) {
 
 
 
-        Route::prefix('blog')->group(function () {
+        Route::group(['prefix' => 'blog'], function () {
             Route::get('/', [BlogController::class, 'index'])->name('blog.index');
             Route::get('/getData', [BlogController::class, 'getData'])->name('blog.data');
             Route::post('/create', [BlogController::class, 'create'])->name('blog.create');
@@ -126,7 +125,6 @@ Route::post('storeText', function (Request $request) {
             Route::get('/edit/{id}', [SuccessPartnerController::class, 'edit'])->name('success_partners.edit');
             Route::put('/update/{id}', [SuccessPartnerController::class, 'update'])->name('success_partners.update');
             Route::delete('/destroy/{id}', [SuccessPartnerController::class, 'destroy'])->name('success_partners.destroy');
-            Route::get('view-image-success-partners/', [SuccessPartnerController::class, 'viewImage'])->name('api.image.partners');
 
         });
 
@@ -141,11 +139,8 @@ Route::post('storeText', function (Request $request) {
             Route::post('/toggle-status', [GalleryController::class, 'toggleStatus'])->name('gallery.toggleStatus');
         });
 
-
-
         Route::resource('users', UserController::class);
         Route::resource('roles', RoleController::class);
-
 
         Route::group(['prefix' => 'pages'], function () {
             Route::get('/', [PageController::class, 'index'])->name('pages.index');
@@ -173,10 +168,6 @@ Route::post('storeText', function (Request $request) {
 
         });
 
-
-
-
-
         Route::group(['prefix' => 'image'], function () {
             Route::post('/upload', [ImageItemController::class, 'store'])->name('image.upload');
             Route::post('delete', [ImageItemController::class, 'delete'])->name('image.delete');
@@ -190,7 +181,7 @@ Route::post('storeText', function (Request $request) {
             Route::get('/create', [FaqController::class, 'createPage'])->name('faq.create.page');
             Route::get('/edit/{id}', [FaqController::class, 'edit'])->name('faq.edit');
             Route::post('/update/{id}', [FaqController::class, 'update'])->name('faq.update');
-            Route::delete('/destroy', [FaqController::class, 'destroy'])->name('faq.destroy');
+            Route::delete('/destroy/{id}', [FaqController::class, 'destroy'])->name('faq.destroy');
             Route::post('/toggle-status', [FaqController::class, 'toggleStatus'])->name('faq.toggleStatus');
             Route::post('get-translations', [FaqController::class, 'getTranslations'])->name('faq.getTranslations');
         });

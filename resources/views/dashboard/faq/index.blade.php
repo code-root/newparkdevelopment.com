@@ -54,7 +54,6 @@
     </div>
 </div>
 
-
 @section('footer')
 <script>
 $(document).ready(function() {
@@ -74,17 +73,19 @@ $(document).ready(function() {
                     var editUrl = `{{ route("faq.edit", ":id") }}`.replace(':id', data);
                     return `
                         <a href="${editUrl}" class="dropdown-item">
-                            <i class="fa fa-pencil"></i> edit
+                            <i class="fa fa-pencil"></i> Edit
                         </a>
-                        <a href="#" class="dropdown-item toggle-Update" data-id="${data}" data-Update="${row.status}">
+                        <a href="#" class="dropdown-item toggle-Update" data-id="${data}" data-status="${row.status}">
                             <i class="fa fa-toggle-${row.status == 1 ? 'on' : 'off'}"></i> ${row.status == 1 ? 'Disable' : 'Enable'}
+                        </a>
+                        <a href="#" class="dropdown-item delete-faq" data-id="${data}">
+                            <i class="fa fa-trash"></i> Delete
                         </a>
                     `;
                 }
             }
         ]
     });
-
 
     $('#data-x').on('click', '.toggle-Update', function(e) {
         e.preventDefault();
@@ -96,8 +97,7 @@ $(document).ready(function() {
             data: {
                 "_token": "{{ csrf_token() }}",
                 "id": id,
-                "model": "Category",
-                status
+                "status": status
             },
             success: function(response) {
                 table.ajax.reload();
@@ -109,14 +109,16 @@ $(document).ready(function() {
         e.preventDefault();
         var id = $(this).data('id');
         $.ajax({
-            url: "{{ route('faq.destroy') }}",
+            url: "{{ route('faq.destroy', ':id') }}".replace(':id', id),
             type: "DELETE",
             data: {
-                "_token": "{{ csrf_token() }}",
-                "id": id
+                "_token": "{{ csrf_token() }}"
             },
             success: function(response) {
                 table.ajax.reload();
+            },
+            error: function(response) {
+                alert('Error: ' + response.responseJSON.error);
             }
         });
     });

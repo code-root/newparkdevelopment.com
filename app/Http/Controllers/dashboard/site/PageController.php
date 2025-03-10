@@ -3,75 +3,42 @@
 namespace App\Http\Controllers\dashboard\site;
 use App\Http\Controllers\Controller;
 use App\Models\App\Page;
-use App\Models\Section;
-use App\Models\Translation;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
 
-
-
-    public function index()
-    {
-        $pages = Page::where('type' , 'site')->get();
+    public function index() {
+        $pages = Page::get();
         return view('dashboard.pages.index', compact('pages'));
     }
 
-    public function showPage($name)
+    
+
+    public function getIds()
     {
-        // Replace dashes with spaces
-        $name = str_replace('-', ' ', $name);
-        // Search for the page by name
-        $page = Page::where('name', 'LIKE', "%$name%")->first();
-
-        if (!$page) {
-            return abort(404, 'Page not found');
-        }
-
-        return view('site.pages.index', compact('page'));
+        return Page::select('name_en', 'id')->get();
     }
 
-
-
-    public function create()
+    public function getPage(Request $request)
     {
-        $pages = Page::where('type' , 'site')->get();
-        return view('dashboard.pages.section-create')
-        ->with('token', Translation::generateUniqueToken())
-        ->with('txt', Page::txt());
+        return Page::where('id', 'LIKE', $request->id)->first();
     }
+
 
 
     public function edit($id)
     {
         $page = Page::findOrFail($id);
-        $section =  Section::where('id',$page->section_id)->first();
-        return view('dashboard.pages.edit', compact('page' , 'section'));
+        return view('dashboard.pages.edit', compact('page'));
     }
 
-    public function createPage(Request $request)
+    public function show(Request $request)
     {
-        $token =  $request->token ;
-        $name = Translation::select('value')->where('key', 'name')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $description = Translation::select('value')->where('key', 'description')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $meta = Translation::select('value')->where('key', 'meta')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $pageData['type'] = 'site';
-        $pageData['tr_token'] =$token ;
-        $pageData['status'] = $request->status ;
-        $pageData['name'] = $name;
-        $pageData['description'] = $description;
-        $pageData['meta'] = $meta;
-        $item  = Page::create($pageData);
 
-        $item_id = Translation::where('token' , $token)->update([
-            'translatable_id' => $item->id,
-            'translatable_type' => Page::class,
-        ]);
-        return response()->json(['success' => 'تم الإنشاء بنجاح.']);
+        $page = Page::findOrFail($request->id);
+        return response()->json($page);
     }
-
-
 
     public function destroy($id)
     {
@@ -80,37 +47,34 @@ class PageController extends Controller
         return response()->json(['message' => 'Page deleted successfully']);
     }
 
-    public function update(Request $request)
-    {
-        $page = Page::findOrFail($request->page_id);
-         $token =  Translation::select(['token'])->where(['translatable_id' => $request->page_id,'translatable_type' => Page::class])->first()['token'] ?? '';
+    public function update(Request $request) {
+        $data = $request->validate([
+            'meta_ar' => 'nullable|string',
+            'meta_en' => 'nullable|string',
+            'name_ar' => 'required|string',
+            'name_en' => 'required|string',
+            'description_ar' => 'nullable|string',
+            'description_en' => 'nullable|string',
+        ]);
 
-        $name = Translation::select('value')->where('key', 'name')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $description = Translation::select('value')->where('key', 'description')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $meta = Translation::select('value')->where('key', 'meta')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-
-        $data['status'] = $request->status ;
-        $data['name'] = $name;
-        $data['description'] = $description;
-        $data['meta'] = $meta;
-        $data['tr_token'] = $token;
+        $page = Page::findOrFail($request->id);
         $page->update($data);
-
-
 
         return response()->json(['message' => 'Page updated successfully']);
     }
-    public function getTranslations(Request $request)
+
+    public function store(Request $request)
     {
-        $languageId = $request->input('language_id');
-        $item_id = $request->input('item_id');
+        $data = $request->validate([
+            'name_ar' => 'required|string',
+            'name_en' => 'required|string',
+            'description_ar' => 'nullable|string',
+            'description_en' => 'nullable|string',
+        ]);
 
-        $translations = Translation::where('language_id', $languageId)
-            ->where('translatable_id', $item_id)
-            ->where('translatable_type', Page::class)
-            ->get();
+        Page::create($data);
 
-        return response()->json($translations);
+        return response()->json(['message' => 'Page added successfully']);
     }
 }
 

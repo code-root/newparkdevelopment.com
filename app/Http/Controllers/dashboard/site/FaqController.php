@@ -100,12 +100,15 @@ class FaqController extends Controller
     }
 
 
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $Faq = Faq::findOrFail($request->id);
-        $Faq->delete();
-
-        return response()->json(['success' => 'Faq destroy']);
+        try {
+            $faq = Faq::findOrFail($id);
+            $faq->delete();
+            return response()->json(['success' => 'Faq deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Faq not found'], 404);
+        }
     }
 
     public function toggleStatus(Request $request)

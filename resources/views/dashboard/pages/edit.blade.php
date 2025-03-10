@@ -1,82 +1,79 @@
 @extends('dashboard.layouts.footer')
 @extends('dashboard.layouts.navbar')
 @section('body')
-
+<script src="https://cdn.tiny.cloud/1/no-origin/tinymce/7.3.0-86/tinymce.min.js" referrerpolicy="origin"></script>
 <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="py-3 mb-4">
+            <span class="text-muted fw-light">Edit </span><span>Page</span>
+        </h4>
 
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif
+        <div class="app-ecommerce">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
-        @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif
+            @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif  
 
-        <div class="row">
-            <div class="col-12 col-lg-12">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h4 class="py-3 mb-4">
-                          Edit Page
-                          @if (isset($section))
-                            {{ $section->name }}
-                          @else
-                          {{ $page->name }}
-                          @endif
-                        </h4>
-                    </div>
-                    <div id="error-messages" class="alert alert-danger d-none" role="alert">
-                        <ul id="error-list"></ul>
-                    </div>
-                    <form id="update-item-form" enctype="multipart/form-data">
-                        @csrf
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label" for="status">Status</label>
-                                    <select id="status" name="status" class="form-control" required>
-                                        <option value="1">On display</option>
-                                        <option value="0">Hidden</option>
-                                    </select>
-                                </div>
-                                <input type="text" id="token" name="token" value="{{ $page->token }}" class="form-control" style="display:none">
-                                <input type="text" id="page_id" name="page_id" value="{{ $page->id }}" class="form-control" style="display:none">
-                            </div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">Edit Page Settings</div>
+                            <div class="card-body">
+                                <form id="update-form">
+                                    @csrf
+                                    @method('POST')
+                                    <input type="hidden" id="page-id" name="id" value="{{ $page->id }}">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="name_ar">Name (AR):</label>
+                                                <input type="text" id="name_ar" name="name_ar" class="form-control" value="{{ $page->name_ar }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="name_en">Name (EN):</label>
+                                                <input type="text" id="name_en" name="name_en" class="form-control" value="{{ $page->name_en }}">
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <h5 class="mt-4">Add Texts in Different Languages</h5>
-                            <div id="language-fields">
-                                <div class="language-row mb-3">
-                                    <label class="form-label" for="language">Select Language</label>
-                                    <select class="form-control language-select" name="language[]" required id="language-select">
-                                        <option value="" disabled selected>اختر لغة</option>
-                                        @foreach($languages as $language)
-                                         <option value="{{ $language->id }}" {{ defaultLanguage() == $language->id ? 'selected' : '' }}>{{ $language->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <label class="form-label mt-2" for="meta">Meta</label>
-                                    <input type="text" name="meta[]" class="form-control" required>
-                                    <label class="form-label mt-2" for="name">Name Section</label>
-                                    <input type="text" name="name[]" class="form-control" required>
-                                    <label class="form-label mt-2" for="description">Description</label>
-                                    <textarea id="tt-description" name="description[]" class="form-control"></textarea>
-                                </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="description_ar">Description (AR):</label>
+                                                <textarea id="description_ar" name="description_ar" class="form-control">{{ $page->description_ar }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="description_en">Description (EN):</label>
+                                                <textarea id="description_en" name="description_en" class="form-control">{{ $page->description_en }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" id="update-item-form" class="btn btn-primary">Update New Item</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,129 +81,33 @@
 </div>
 
 @section('footer')
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <script>
-
-    const token = "{{ $page->tr_token }}";
     $(document).ready(function() {
-        $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+        });
+
+        $('#update-form').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{{ route('pages.update', $page->id) }}",
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    alert(response.message);
+                    window.location.href = "{{ route('pages.index') }}"; // Redirect to index page
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        });
     });
-    const selectedLanguage = $('#language-select').val();
-    if (selectedLanguage) {
-        const languageRow = $('.language-row');
-        loadTranslationData(selectedLanguage, languageRow);
-    }
-});
-
-// console.log(token)
-
-tinymce.init({
-    selector: 'textarea',
-    height: 400,
-    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table',
-    toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | link image | code',
-    branding: false,
-    setup: function (editor) {
-        editor.on('keyup', saveTextData);
-    }
-});
-
-$('#update-item-form').on('submit', function(e) {
-    e.preventDefault();
-    @if (isset($section))
-        const href =  "{{ route('dashboard.sections.index') }}"
-        @else
-        const href =  "{{ route('pages.index') }}"
-        @endif
-    $('#error-messages').addClass('d-none').find('#error-list').empty();
-
-    $.ajax({
-        url: "{{ route('dashboard.pages.update') }}",
-        type: 'POST',
-        data: new FormData(this),
-        contentType: false,
-        processData: false,
-        success: function() {
-            window.location.href = href;
-        },
-        error: function(xhr) {
-            displayErrors(xhr.responseJSON.errors);
-        }
-    });
-});
-
-$('#language-fields').on('keyup change', 'input, textarea, .language-select', function() {
-    const languageRow = $(this).closest('.language-row');
-    const selectedLanguage = languageRow.find('.language-select').val();
-
-    if (selectedLanguage) {
-        if ($(this).hasClass('language-select')) {
-            loadTranslationData(selectedLanguage, languageRow);
-        } else {
-            saveTextData();
-        }
-    }
-});
-
-function saveTextData() {
-    const languageRow = $('.language-row');
-    const selectedLanguage = $('#language-select').val();
-
-    const textData = {
-        language_id: selectedLanguage,
-        token:  "{{ $page->tr_token }}",
-        description: tinyMCE.get('tt-description').getContent(),
-        meta: languageRow.find('input[name="meta[]"]').val(),
-        name: languageRow.find('input[name="name[]"]').val()
-    };
-
-    $.ajax({
-        url: "{{ route('storeText') }}",
-        type: 'POST',
-        data: textData,
-        success: function(response) {
-            console.log('Content saved:', response);
-        },
-        error: function(xhr) {
-            console.error('Error saving content:', xhr);
-        }
-    });
-}
-
-function loadTranslationData(languageId, languageRow) {
-    const loader = $('<div class="loader">جاري تحميل البيانات...</div>');
-    languageRow.append(loader);
-    languageRow.find('input, textarea').prop('disabled', true);
-
-    $.ajax({
-        url: "{{ route('getText') }}",
-        type: 'GET',
-        data: { language_id: languageId, token: "{{ $page->tr_token }}" , item_id: "{{ $page->id }}" },
-        success: function(response) {
-            const translation = response.translations || {};
-            languageRow.find('input[name="meta[]"]').val(translation.meta || '');
-            languageRow.find('input[name="name[]"]').val(translation.name || '');
-            tinymce.get('tt-description').setContent(translation.description || '');
-        },
-        error: function(xhr) {
-            console.error(xhr);
-        },
-        complete: function() {
-            loader.remove();
-            languageRow.find('input, textarea').prop('disabled', false);
-        }
-    });
-}
-
-function displayErrors(errors) {
-    $('#error-messages').removeClass('d-none');
-    $.each(errors, function(key, value) {
-        $('#error-list').append('<li>' + value[0] + '</li>');
-    });
-}
-
 </script>
 @endsection
 @endsection
