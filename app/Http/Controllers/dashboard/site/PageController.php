@@ -1,23 +1,25 @@
 <?php
 
 namespace App\Http\Controllers\dashboard\site;
+
 use App\Http\Controllers\Controller;
-use App\Models\App\Page;
+use App\Models\site\Page;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
 
-    public function index() {
+    public function index()
+    {
         $pages = Page::get();
         return view('dashboard.pages.index', compact('pages'));
     }
 
-    
+
 
     public function getIds()
     {
-        return Page::select('name_en', 'id')->get();
+        return Page::select('name', 'id')->get();
     }
 
     public function getPage(Request $request)
@@ -47,14 +49,12 @@ class PageController extends Controller
         return response()->json(['message' => 'Page deleted successfully']);
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         $data = $request->validate([
-            'meta_ar' => 'nullable|string',
-            'meta_en' => 'nullable|string',
-            'name_ar' => 'required|string',
-            'name_en' => 'required|string',
-            'description_ar' => 'nullable|string',
-            'description_en' => 'nullable|string',
+            'meta' => 'nullable|string',
+            'name' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
         $page = Page::findOrFail($request->id);
@@ -66,10 +66,8 @@ class PageController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name_ar' => 'required|string',
-            'name_en' => 'required|string',
-            'description_ar' => 'nullable|string',
-            'description_en' => 'nullable|string',
+            'name' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
         Page::create($data);
@@ -77,4 +75,3 @@ class PageController extends Controller
         return response()->json(['message' => 'Page added successfully']);
     }
 }
-

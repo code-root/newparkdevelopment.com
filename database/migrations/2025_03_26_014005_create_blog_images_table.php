@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('faqs', function (Blueprint $table) {
+        Schema::create('blog_images', function (Blueprint $table) {
             $table->id();
-            $table->string('question');
-            $table->string('answer');
+            $table->foreignId('blog_id')->constrained()->onDelete('cascade'); 
+            $table->string('path');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('faqs');
+        Schema::dropIfExists('blog_images');
     }
 };

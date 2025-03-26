@@ -15,13 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->string('content');
+            $table->integer('category_id')->nullable();
             $table->string('author');
             $table->string('image')->nullable();
-            $table->string('tr_token', 255);
-            $table->foreign('tr_token')->references('token')->on('translations')->onDelete('cascade');
-            $table->index(['tr_token']);
-            $table->string('status')->default('active');
+            $table->string('status')->default(1);
             $table->timestamps();
         });
     }

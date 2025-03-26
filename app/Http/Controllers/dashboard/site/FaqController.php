@@ -18,23 +18,9 @@ class FaqController extends Controller
 
     public function createPage()
     {
-        return view('dashboard.faq.add')
-        ->with('token', Translation::generateUniqueToken())
-        ->with('txt', Faq::txt());
+        return view('dashboard.faq.add');
     }
 
-    public function getTranslations(Request $request)
-    {
-        $languageId = $request->input('language_id');
-        $item_id = $request->input('item_id');
-
-        $translations = Translation::where('language_id', $languageId)
-            ->where('translatable_id', $item_id)
-            ->where('translatable_type', Faq::class)
-            ->get();
-
-        return response()->json($translations);
-    }
 
     public function getData(Request $request)
     {
@@ -47,57 +33,43 @@ class FaqController extends Controller
     }
 
 
+
+    public function edit($id)
+    {
+        $data = Faq::findOrFail($id);
+        return view('dashboard.faq.edit', compact('data'));
+    }
+
     public function create(Request $request)
     {
-        $token = $request->token ;
-        $question = Translation::select('value')->where('key', 'question')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $answer = Translation::select('value')->where('key', 'answer')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-
-        $item = Faq::create([
-            'answer' =>$answer,
-            'question' =>$question,
-            'tr_token'=>$token,
-            'status'=>$request->status,
+        $validatedData = $request->validate([
+            'question' => 'required|string|max:255',
+            'answer' => 'required|string|max:5000',
+            'status' => 'required|boolean',
         ]);
 
-        $button_text = Translation::where('token' , $token)->update([
-            'translatable_id' => $item->id,
-            'translatable_type' => Faq::class,
+        $item = Faq::create([
+            'question' => $validatedData['question'],
+            'answer' => $validatedData['answer'],
+            'status' => $validatedData['status'],
         ]);
 
         return response()->json(['message' => 'Added Faq successfully', 'data' => $item]);
     }
 
-    public function edit($id)
-    {
-        $data = Faq::with(['translations'])->findOrFail($id);
-        $txt = Faq::txt();
-        $languages = Translation::all();
-        return view('dashboard.faq.edit', compact('data', 'txt', 'languages'));
-    }
-
     public function update(Request $request, $id)
     {
+        $validatedData = $request->validate([
+            'question' => 'sometimes|required|string|max:255',
+            'answer' => 'sometimes|required|string|max:5000',
+            'status' => 'required|boolean',
+        ]);
+
         $data = Faq::findOrFail($id);
-        $data->update($request->only(['status']));
-      foreach ($request->except(['_token', '_method']) as $key => $translations) {
-        if (is_array($translations)) {
-            foreach ($translations as $languageId => $value) {
-                Translation::updateOrCreate(
-                    [
-                        'translatable_id' => $data->id,
-                        'translatable_type' => Faq::class,
-                        'language_id' => $languageId,
-                        'key' => $key,
-                    ],
-                    ['value' => $value, 'status' => 1]
-                );
-            }
-        }
+        $data->update($validatedData);
+        return back()->with('success', 'Faq updated successfully');
         }
 
-        return view('dashboard.faq.index')->with('success', 'Faq updated successfully');
-    }
 
 
     public function destroy($id)

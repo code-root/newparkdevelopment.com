@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\dashboard\site;
+
 use App\Http\Controllers\Controller;
 use App\Models\site\Category;
 use App\Models\Translation;
@@ -16,23 +17,9 @@ class CategoryController extends Controller
 
     public function createPage()
     {
-        return view('dashboard.category.add')
-        ->with('token', Translation::generateUniqueToken())
-        ->with('txt', Category::txt());
+        return view('dashboard.category.add');
     }
 
-    public function getTranslations(Request $request)
-    {
-        $languageId = $request->input('language_id');
-        $item_id = $request->input('item_id');
-
-        $translations = Translation::where('language_id', $languageId)
-            ->where('translatable_id', $item_id)
-            ->where('translatable_type', Category::class)
-            ->get();
-
-        return response()->json($translations);
-    }
 
     public function getData(Request $request)
     {
@@ -47,10 +34,12 @@ class CategoryController extends Controller
 
     public function create(Request $request)
     {
-        $token = $request->token;
-        $name = Translation::select('value')->where('key', 'name')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $title = Translation::select('value')->where('key', 'title')->where('token', $token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'status' => 'required|boolean',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
         $iconPath = null;
         if ($request->hasFile('icon')) {
@@ -58,56 +47,38 @@ class CategoryController extends Controller
         }
 
         $item = Category::create([
-            'name' => $name,
-            'title' => $title,
-            'tr_token' => $token,
+            'name' => $request->name,
+            'title' => $request->title,
+            'tr_token' => $request->token,
             'status' => $request->status,
             'icon' => $iconPath,
             'color_class' => $request->color_class,
         ]);
 
-        Translation::where('token', $token)->update([
-            'translatable_id' => $item->id,
-            'translatable_type' => Category::class,
-        ]);
-
         return response()->json(['message' => 'Added Category successfully', 'data' => $item]);
     }
-
     public function edit($id)
     {
-        $data = Category::with(['translations'])->findOrFail($id);
-        $txt = Category::txt();
-        $languages = Translation::all();
-        return view('dashboard.category.edit', compact('data', 'txt', 'languages'));
+        $data = Category::findOrFail($id);
+        return view('dashboard.category.edit', compact('data'));
     }
 
     public function update(Request $request, $id)
     {
         $data = Category::findOrFail($id);
-        $data->update($request->only(['status']));
-    foreach ($request->except(['_token', '_method']) as $key => $translations) {
-        if (is_array($translations)) {
-            foreach ($translations as $languageId => $value) {
-                Translation::updateOrCreate(
-                    [
-                        'translatable_id' => $data->id,
-                        'translatable_type' => Category::class,
-                        'language_id' => $languageId,
-                        'key' => $key,
-                    ],
-                    ['value' => $value, 'status' => 1]
-                );
-            }
-        }
-        }
 
-        // return $data->tr_token;
-        $name = Translation::select('value')->where('key', 'name')->where('token', $data->tr_token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $title = Translation::select('value')->where('key', 'title')->where('token', $data->tr_token)->where('language_id', defaultLanguage())->first()['value'] ?? '';
-        $item = $data->update([
-            'name' => $name,
-            'title' => $title,
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'status' => 'required|boolean',
+            'color_class' => 'nullable|string|max:255',
+        ]);
+
+        $data->update([
+            'name' => $request->name,
+            'title' => $request->title,
+            'status' => $request->status,
+            'color_class' => $request->color_class,
         ]);
 
         return redirect()->route('category.index')->with('success', 'Category updated successfully');

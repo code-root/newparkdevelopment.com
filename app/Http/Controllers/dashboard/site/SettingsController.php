@@ -8,34 +8,6 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
-    public function getFields(Request $request)
-    {
-        $language = $request->input('language');
-        $settings = $this->getFieldsByLanguage($language);
-
-        return response()->json([
-            'footer_description' => $settings['footer_description'] ?? '',
-            'about_us' => $settings['about_us'] ?? '',
-            'about_intro' => $settings['about_intro'] ?? '',
-            'about_mission' => $settings['about_mission'] ?? '',
-            'faq_title' => $settings['faq_title'] ?? '',
-            'banner_title' => $settings['banner_title'] ?? '',
-            'banner_description' => $settings['banner_description'] ?? '',
-            'banner_button_text' => $settings['banner_button_text'] ?? '',
-            'site_name' => $settings['site_name'] ?? '',
-            'phone' => $settings['phone'] ?? '',
-            'email' => $settings['email'] ?? '',
-            'hero_subtitle' => $settings['hero_subtitle'] ?? '',
-            'hero_title_1' => $settings['hero_title_1'] ?? '',
-            'hero_title_2' => $settings['hero_title_2'] ?? '',
-            'hero_description' => $settings['hero_description'] ?? '',
-            'hero_cta' => $settings['hero_cta'] ?? '',
-            'rental_stats_count' => $settings['rental_stats_count'] ?? '',
-            'rental_stats_text' => $settings['rental_stats_text'] ?? '',
-            'buy_stats_count' => $settings['buy_stats_count'] ?? '',
-            'buy_stats_text' => $settings['buy_stats_text'] ?? '',
-        ]);
-    }
 
     public function index()
     {
@@ -47,7 +19,6 @@ class SettingsController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'language' => 'required|string|in:en,ar',
             'site_name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'email' => 'required|email|max:255',
@@ -56,31 +27,41 @@ class SettingsController extends Controller
             'about_intro' => 'nullable|string',
             'about_mission' => 'nullable|string',
             'faq_title' => 'nullable|string|max:255',
-            'facebook' => 'nullable|string|max:255',
-            'twitter' => 'nullable|string|max:255',
-            'instagram' => 'nullable|string|max:255',
-            'linkedin' => 'nullable|string|max:255',
-            'youtube' => 'nullable|string|max:255',
-            'snapchat' => 'nullable|string|max:255',
-            'tiktok' => 'nullable|string|max:255',
-            'google_maps' => 'nullable|string',
-            'whatsapp' => 'nullable|string|max:255',
+            'hero_cta' => 'nullable|string|max:255',
+            'rental_stats_count' => 'nullable|string|max:255',
+            'rental_stats_text' => 'nullable|string|max:255',
+            'google_maps' => 'nullable',
+            'buy_stats_count' => 'nullable|string|max:255',
+            'buy_stats_text' => 'nullable|string|max:255',
+            'hero_subtitle' => 'nullable|string|max:255',
+            'hero_title_1' => 'nullable|string|max:255',
+            'hero_title_2' => 'nullable|string|max:255',
+            'hero_description' => 'nullable|string|max:255',
+            'slider_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // صورة السلايدر
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // الشعار
         ]);
 
-        $language = $request->input('language');
-        $settingsData = $request->except(['_token', 'logo']);
+        $settingsData = $request->except(['_token', 'slider_image', 'logo']);
 
         // تحديث الحقول النصية
         foreach ($settingsData as $key => $value) {
-            $this->updateField($key, in_array($key, $this->basicFields()) ? 'basic' : $language, $value);
+            $this->updateField($key, in_array($key, $this->basicFields()) ? 'basic' : '', $value);
         }
 
-        // رفع الملفات
-        $this->updateFile($request, 'logo', 'logos');
+        // رفع صورة السلايدر
+        if ($request->hasFile('slider_image')) {
+            $sliderImagePath = $request->file('slider_image')->store('sliders');
+            $this->updateField('slider_image', 'basic', $sliderImagePath);
+        }
+
+        // رفع الشعار
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('logos');
+            $this->updateField('logo', 'basic', $logoPath);
+        }
 
         return response()->json(['success' => 'Settings updated successfully.']);
     }
-
     protected function updateField($slug, $type, $value)
     {
         Setting::updateOrCreate(
@@ -99,7 +80,7 @@ class SettingsController extends Controller
 
     protected function getFieldsByLanguage($language)
     {
-        return Setting::where(['type'=>$language])->pluck('value', 'slug')->toArray();
+        return Setting::where(['type' => $language])->pluck('value', 'slug')->toArray();
     }
 
     protected function basicFields()
@@ -117,6 +98,9 @@ class SettingsController extends Controller
             'tiktok',
             'google_maps',
             'whatsapp',
+            'meta_title',
+            'meta_keywords',
+            'meta_description',
         ];
     }
 }

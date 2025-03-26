@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description'); 
+            $table->text('description');
             $table->string('icon')->nullable();
-            $table->string('color_class')->nullable(); 
-            $table->string('status')->default('active');
-            $table->string('tr_token')->nullable(); 
-            $table->foreign('tr_token')->references('token')->on('translations'); 
-            $table->index(['tr_token']);
+            $table->string('color_class')->nullable();
+            $table->string('status')->default(1);
             $table->timestamps();
         });
     }

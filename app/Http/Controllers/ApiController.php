@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Testimonial;
-use App\Models\App\Page;
-use App\Models\Setting;
 use App\Models\Contact;
-use App\Models\site\Faq;
-use App\Models\site\SuccessPartner;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Project;
-use App\Models\Translation;
-use App\Models\Blog;
-use App\Models\site\Category;
+use App\Models\Setting;
+use App\Models\site\Faq;
+use App\Models\site\Page;
+use Illuminate\Http\Request;
+use App\Models\site\SuccessPartner;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Blog\Blog;use App\Models\site\Category;
 
 class ApiController extends Controller
 {
@@ -21,27 +18,9 @@ class ApiController extends Controller
 
     public function home( $locale = 'ar')
     {
-        $settings = Setting::where('type', $locale)->pluck('value', 'slug')->toArray();
+        $settings = Setting::pluck('value', 'slug')->toArray();
         $socials = Setting::whereIn('slug', ['facebook', 'instagram', 'linkedin', 'twitter' , 'google_maps' , 'email' , 'site_name' , 'whatsapp' , 'phone'])->pluck('value', 'slug')->toArray();
-        // $socials['google_maps'] = $settings['google_maps'] ??  '';
-        // $socials['x'] = $settings['x'] ??  '';
-
-
-        $faqs = Faq::all()->map(function ($faq) {
-            return [
-                'question' => Translation::where('key', 'question')
-                    ->where('token', $faq->tr_token)
-                    ->where('language_id', defaultLanguage())
-                    ->value('value') ?? '',
-
-                'answer' => Translation::where('key', 'answer')
-                    ->where('token', $faq->tr_token)
-                    ->where('language_id', defaultLanguage())
-                    ->value('value') ?? '',
-            ];
-        });
-
-        // $sections = Section::with(['pages'])->where('status', 1)->get();
+        $faqs = Faq::all();
         return response()->json([
             'settings' => $settings,
             'socials' => $socials,
@@ -98,51 +77,36 @@ class ApiController extends Controller
     public function showPage($id, Request $request)
     {
         $page = Page::findOrFail($id);
-        $languageSuffix = $this->language($request);
-    
-        $d = 'description' . $languageSuffix;
-        $m = 'meta' . $languageSuffix;
-    
+
+
         return response()->json([
             'name' => $page->nameLanguage(),
-            'description' => $page->$d,
-            'meta' => $page->$m,
+            'description' => $page->description,
+            'meta' => $page->meta,
         ]);
     }
 
-    public function language(Request $request)
-    {
-        $language = $request->header('language', 'en');
-        if ($language === 'ar') {
-            return '_ar';
-        } else {
-            return '_en';
-        }
-    }
+
 
 
 
     public function getPage(Request $request) {
         $pages = Page::all();
-        $languageSuffix = $this->language($request);
         $data = [];
-    
+
         foreach ($pages as $page) {
-            // $d = 'description' . $languageSuffix;
-            $m = 'meta' . $languageSuffix;
-    
+
             $data[] = [
                 'id' => $page->id,
-                'name' => $page->nameLanguage(),
-                // 'description' => $page->$d,
-                'meta' => $page->$m,
+                'name' => $page->name,
+                'meta' => $page->meta ?? '',
             ];
         }
-    
+
         if (empty($data)) {
             return response()->json(['error' => 'Pages not found'], 404);
         }
-    
+
         return response()->json($data);
     }
 

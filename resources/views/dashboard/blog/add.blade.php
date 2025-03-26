@@ -27,7 +27,7 @@
         @endif
 
         <div class="row">
-            <div class="col-12 col-lg-8">
+            <div class="col-12 col-lg-12">
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Blog Information</h5>
@@ -38,74 +38,74 @@
                     <form id="add-blog-form" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
-                            
                             <div class="row mb-3">
-                                <div class="row mb-3">
-                                    <div class="col-md-12 mt-3">
-                                        <label class="form-label" for="author">Author</label>
-                                        <input type="text" id="author" name="author" class="form-control" required>
-                                    </div>
-                                    <div class="col-md-12 mt-3">
-                                        <label class="form-label" for="image">Image</label>
-                                        <input type="file" id="image" name="image" class="form-control" required>
-                                    </div>
+                                <div class="col-md-12">
+                                    <label class="form-label" for="name">Name</label>
+                                    <input type="text" id="name" name="name" class="form-control" required>
                                 </div>
-                            <h5 class="mt-4">Add Texts in Different Languages</h5>
-                            <div id="language-fields">
-                                <div class="language-row mb-3">
-                                    <label class="form-label" for="language">Select Language</label>
-                                    <select class="form-control language-select" name="language[]" required>
-                                        <option value="" disabled selected>Select Language</option>
-                                        @foreach($languages as $language)
-                                        <option value="{{ $language->id }}" {{ defaultLanguage() == $language->id ? 'selected' : '' }}>{{ $language->name }}</option>
+                                <div class="col-md-12 mt-3">
+                                    <label class="form-label" for="title">Title</label>
+                                    <input type="text" id="title" name="title" class="form-control" required>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <label class="form-label" for="description">Description</label>
+                                    <textarea id="description" name="description" class="form-control" rows="5" ></textarea>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <label class="form-label" for="category_id">Category</label>
+                                    <select id="category_id" name="category_id" class="form-control" required>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
                                     </select>
-
-                                    @foreach ($txt as $key => $field)
-                                    <label class="form-label mt-2" for="{{ $key }}">{{ $field['label'] }}</label>
-                                    @if ($field['type'] === 'input')
-                                    <input type="text" name="{{ $key }}[]" class="form-control" required>
-                                    @elseif ($field['type'] === 'textarea')
-                                    <textarea name="description[]" id="textarea-tt" class="form-control textarea-tt" ></textarea>
-                                    @endif
-                                    @endforeach
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <label class="form-label" for="status">Status</label>
+                                    <select id="status" name="status" class="form-control" required>
+                                        <option value="1">Active</option>
+                                        <option value="0">Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <label class="form-label" for="author">Author</label>
+                                    <input type="text" id="author" name="author" class="form-control">
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <label class="form-label" for="image">Main Image</label>
+                                    <input type="file" id="image" name="image" class="form-control" required>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <label class="form-label" for="images">Additional Images</label>
+                                    <input type="file" id="images" name="images[]" class="form-control" multiple>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer">
-                            <input type="hidden" id="token" name="token" value="{{ $token }}" class="form-control">
                             <button type="submit" class="btn btn-primary">Add New Blog</button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
-@section('footer')
+</div>
+@endsection
+@section('footer-script')
 <script>
-    tinymce.init({
-        selector: 'textarea',
-        height: 400,
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table',
-        toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | link image | code',
-        branding: false
-    });
-
-    const token = "{{ $token }}";
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
+            tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+        });
     $('#add-blog-form').on('submit', function(e) {
         e.preventDefault();
+        let submitButton = $(this).find('button[type="submit"]');
+        submitButton.prop('disabled', true).text('Submitting...');
         $('#error-messages').addClass('d-none');
         $('#error-list').empty();
-
-        tinymce.triggerSave();
 
         $.ajax({
             url: "{{ route('blog.create') }}",
@@ -117,6 +117,7 @@
                 window.location.href = "{{ route('blog.index') }}";
             },
             error: function(xhr) {
+                submitButton.prop('disabled', false).text('Add New Blog');
                 $('#error-messages').removeClass('d-none');
                 let errors = xhr.responseJSON.errors;
                 $.each(errors, function(key, value) {
@@ -125,72 +126,5 @@
             }
         });
     });
-
-    $('#language-fields').on('keyup', 'input[type="text"], textarea', function(e) {
-        const languageRow = $(this).closest('.language-row');
-        const languageId = languageRow.find('.language-select').val();
-
-        const textData = {
-            language_id: languageId,
-            token: token,
-            @foreach ($txt as $key => $field)
-            '{{ $key }}': languageRow.find('input[name="{{ $key }}[]"], textarea[name="{{ $key }}[]"]').val(),
-            @endforeach
-            description: tinyMCE.get('textarea-tt').getContent(),
-        };
-
-        $.ajax({
-            url: "{{ route('storeText') }}",
-            type: 'POST',
-            data: textData,
-            success: function(response) {
-                console.log(response.message);
-            },
-            error: function(xhr) {
-                console.error(xhr);
-            }
-        });
-    });
-
-    $('#language-fields').on('change', '.language-select', function(e) {
-        const languageId = $(this).val();
-        const languageRow = $(this).closest('.language-row');
-        const loader = $('<div class="loader">Loading data...</div>');
-        languageRow.append(loader);
-        tinymce.get('textarea-tt').setContent('');
-
-        const inputs = languageRow.find('input, textarea');
-        inputs.prop('disabled', true);
-
-        $.ajax({
-            url: "{{ route('getText') }}",
-            type: 'GET',
-            data: {
-                language_id: languageId,
-                token: token
-            },
-            success: function(response) {
-                const translation = response.translations;
-                if (response.empty == 200) {
-                    @foreach ($txt as $key => $field)
-                    tinymce.get('textarea-tt').setContent(translation.description);
-                    languageRow.find('input[name="{{ $key }}[]"], textarea[name="{{ $key }}[]"]').val(translation['{{ $key }}'] || '');
-                    @endforeach
-                } else {
-                    @foreach ($txt as $key => $field)
-                    languageRow.find('input[name="{{ $key }}[]"], textarea[name="{{ $key }}[]"]').val('');
-                    @endforeach
-                }
-            },
-            error: function(xhr) {
-                console.error(xhr);
-            },
-            complete: function() {
-                loader.remove();
-                inputs.prop('disabled', false);
-            }
-        });
-    });
 </script>
-@endsection
 @endsection

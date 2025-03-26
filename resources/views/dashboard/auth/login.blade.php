@@ -4,7 +4,7 @@
         <div class="container-fluid p-0">
                   <div class="row m-0">
               <div class="col-12 p-0">
-                <div class="login-card login-dark" style="background-image: url('https://img.freepik.com/free-vector/abstract-technology-betwork-wire-mesh-background_1017-17263.jpg?t=st=1739892439~exp=1739896039~hmac=a5cec97906de772258891b308d3f6e017a18e3fe1d49cbd35a8d86c8582f8511&w=2000');">
+                <div class="login-card login-dark" >
                   <div>
                     <div>
 

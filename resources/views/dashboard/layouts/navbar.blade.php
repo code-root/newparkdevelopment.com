@@ -37,9 +37,8 @@
                     </a>
                 </li>
 
-                    {{-- @endcan --}}
 
-                    <li class="menu-item" data-path="{{ route('contacts.index') }}">
+                <li class="menu-item" data-path="{{ route('contacts.index') }}">
                         <a href="{{ route('contacts.index') }}" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-phone"></i>
                             <div class="text-truncate" data-i18n="Contacts">Contacts</div>
@@ -53,90 +52,45 @@
                         </a>
                     </li>
 
-                    @can('layout-roles')
-                    <li class="menu-item" data-path="javascript:void(0);">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-user-shield"></i>
-                            <div class="text-truncate" data-i18n="Roles & Permissions">Roles & Permissions</div>
-                        </a>
-                        <ul class="menu-sub">
-                            @can('layout-users')
-                            <li class="menu-item" data-path="{{ route('users.index') }}">
-                                <a href="{{ route('users.index') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Users">Users</div>
-                                </a>
-                            </li>
-                            @endcan
-                            @can('create-users')
-                            <li class="menu-item" data-path="{{ route('users.create') }}">
-                                <a href="{{ route('users.create') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Create Users">Create Users</div>
-                                </a>
-                            </li>
-                            @endcan
-                            @can('layout-roles')
-                            <li class="menu-item" data-path="{{ route('roles.index') }}">
-                                <a href="{{ route('roles.index') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Permissions">Permissions</div>
-                                </a>
-                            </li>
-                            @endcan
-                        </ul>
-                    </li>
-                    @endcan
-
 
                     <!-- Category -->
-                    @can('view-category')
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-category"></i>
                             <div class="text-truncate" data-i18n="Category">Category</div>
                         </a>
                         <ul class="menu-sub">
-                            @can('view-category')
                             <li class="menu-item">
                                 <a href="{{ route('category.index') }}" class="menu-link">
                                     <div class="text-truncate" data-i18n="View">View</div>
                                 </a>
                             </li>
-                            @endcan
-                            @can('create-category')
                             <li class="menu-item">
                                 <a href="{{ route('category.create') }}" class="menu-link">
                                     <div class="text-truncate" data-i18n="Add">Add</div>
                                 </a>
                             </li>
-                            @endcan
                         </ul>
                     </li>
-                    @endcan
 
-                    <!-- project -->
-                    @can('view-service')
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-briefcase"></i>
                             <div class="text-truncate" data-i18n="project">project</div>
                         </a>
                         <ul class="menu-sub">
-                            @can('view-service')
                             <li class="menu-item">
                                 <a href="{{ route('project.index') }}" class="menu-link">
                                     <div class="text-truncate" data-i18n="View">View</div>
                                 </a>
                             </li>
-                            @endcan
-                            @can('create-service')
                             <li class="menu-item">
                                 <a href="{{ route('project.create') }}" class="menu-link">
                                     <div class="text-truncate" data-i18n="Add">Add</div>
                                 </a>
                             </li>
-                            @endcan
                         </ul>
                     </li>
-                    @endcan
 
                     <li class="menu-item">
                         <a href="{{ route('success_partners.index') }}" class="menu-link">
@@ -155,31 +109,24 @@
 
 
                     <!-- FAQ -->
-                    @can('view-faq')
                     <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-question-mark"></i>
                             <div class="text-truncate" data-i18n="FAQ">FAQ</div>
                         </a>
                         <ul class="menu-sub">
-                            @can('view-faq')
                             <li class="menu-item">
                                 <a href="{{ route('faq.index') }}" class="menu-link">
                                     <div class="text-truncate" data-i18n="View">View</div>
                                 </a>
                             </li>
-                            @endcan
-                            @can('create-faq')
                             <li class="menu-item">
                                 <a href="{{ route('faq.create') }}" class="menu-link">
                                     <div class="text-truncate" data-i18n="Add">Add</div>
                                 </a>
                             </li>
-                            @endcan
                         </ul>
                     </li>
-                    @endcan
-
 
                 </ul>
             </aside>

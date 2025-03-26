@@ -201,18 +201,6 @@ Route::post('storeText', function (Request $request) {
             Route::post('get-translations', [CategoryController::class, 'getTranslations'])->name('category.getTranslations');
 
         });
-        Route::prefix('sections')->group(function () {
-            Route::get('/', [SectionController::class, 'index'])->name('section.index');
-            Route::get('/getData', [SectionController::class, 'getData'])->name('section.data');
-            Route::post('/create', [SectionController::class, 'create'])->name('section.create');
-            Route::get('/edit/{id}', [SectionController::class, 'edit'])->name('section.edit');
-            Route::post('/update/{id}', [SectionController::class, 'update'])->name('section.update');
-            Route::delete('/destroy', [SectionController::class, 'destroy'])->name('section.destroy');
-            Route::post('/toggle-status', [SectionController::class, 'toggleStatus'])->name('section.toggleStatus');
-            Route::get('/{section_id}/pages/create', [SectionController::class, 'createPages'])->name('page.create');
-            Route::post('/{section_id}/pages/save', [SectionController::class, 'savePage'])->name('page.save');
-        });
-
 
         Route::group(['prefix' => 'settings'], function () {
             Route::get('/', [SettingsController::class, 'index'])->name('settings.index');

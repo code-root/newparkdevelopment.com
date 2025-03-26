@@ -36,7 +36,6 @@
                                 </a>
                             </div>
                         </div>
-
                     </div>
                     <table id="data-x" class="table border-top dataTable dtr-column">
                         <thead>
@@ -55,13 +54,9 @@
         </div>
     </div>
 </div>
+@endsection
 
-
-@section('footer')
-<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+@section('footer-script')
 <script>
 $(document).ready(function() {
     var table = $('#data-x').DataTable({
@@ -86,13 +81,18 @@ $(document).ready(function() {
                         <a href="#" class="dropdown-item toggle-Update" data-id="${data}" data-Update="${row.status}">
                             <i class="fa fa-toggle-${row.status == 1 ? 'on' : 'off'}"></i> ${row.status == 1 ? 'Disable' : 'Enable'}
                         </a>
+                        <a href="#" class="dropdown-item delete-category" data-id="${data}">
+                            <i class="fa fa-trash"></i> Delete
+                        </a>
                     `;
                 }
             }
+        ],
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
-
-
 
     $('#data-x').on('click', '.toggle-Update', function(e) {
         e.preventDefault();
@@ -113,61 +113,45 @@ $(document).ready(function() {
         });
     });
 
-    $('#submitForm').click(function(e) {
-        e.preventDefault();
-        // الحصول على محتوى TinyMCE
-        var descriptionContent = tinymce.get('description').getContent();
-        var formData = new FormData($('#store-form')[0]);
-        formData.append('description', descriptionContent); // إضافة المحتوى إلى formData
-
-        $.ajax({
-            url: "{{ route('category.create') }}",
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                $('#add-new-record').modal('hide');
-                $('.form-control').removeClass('is-invalid');
-                Lobibox.notify('success', {
-                    title: 'Success',
-                    msg: 'تمت الإضافة بنجاح.'
+    $(document).on("click", ".delete-category", function () {
+        var itemId = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: `{{ route('category.destroy') }}`,
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                        'id': itemId,
+                        'model': "Category"
+                    },
+                    success: function(data) {
+                        table.ajax.reload();
+                        Swal.fire(
+                            'Deleted!',
+                            'The category has been deleted.',
+                            'success'
+                        );
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Failed to delete the category. Please try again.',
+                        });
+                    }
                 });
-                $('#store-form')[0].reset();
-                table.ajax.reload();
-            },
-            error: function(xhr) {
-                var errors = JSON.parse(xhr.responseText).errors;
-                var errorMessages = '';
-                $.each(errors, function(key, value) {
-                    $('#' + key).addClass('is-invalid');
-                    errorMessages += '<li>' + value.join(', ') + '</li>';
-                });
-                $('#error-messages').html('<div class="alert alert-danger"><ul>' + errorMessages + '</ul></div>');
             }
         });
     });
 
-    $(document).on("click", ".delete-category", function () {
-        var itemId = $(this).data('id');
-        $("#deleteModal").modal('show');
-        $("#confirmDelete").on("click", function () {
-            $.ajax({
-                type: 'DELETE',
-                url: "{{ route('category.destroy') }}",
-                data: {
-                    '_token': '{{ csrf_token() }}',
-                    'id': itemId,
-                    'model': "Category"
-                },
-                success: function(data) {
-                    $("#deleteModal").modal('hide');
-                    table.ajax.reload();
-                }
-            });
-        });
-    });
 });
 </script>
-@endsection
 @endsection

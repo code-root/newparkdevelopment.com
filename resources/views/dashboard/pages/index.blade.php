@@ -29,13 +29,6 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <span>All Pages</span>
-                                <div>
-                                    <select id="languageSelect" class="form-select" aria-label="Select Language">
-                                        <option value="en">English</option>
-                                        <option value="ar">عربي</option>
-                                    </select>
-                                </div>
                                 <button class="btn btn-primary" id="addNewPageBtn">Add New Page</button>
                             </div>
                             <div class="card-body">
@@ -43,8 +36,7 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Name (EN)</th>
-                                            <th>Name (AR)</th>
+                                            <th>Name</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -52,8 +44,7 @@
                                         @foreach($pages as $page)
                                             <tr>
                                                 <td>{{ $page->id }}</td>
-                                                <td class="name_en">{{ $page->name_en }}</td>
-                                                <td class="name_ar">{{ $page->name_ar }}</td>
+                                                <td class="name">{{ $page->name }}</td>
                                                 <td>
                                                     <a href="{{ route('pages.edit', $page->id) }}" class="btn btn-warning">Edit</a>
                                                 </td>
@@ -79,21 +70,14 @@
                     <div class="modal-body">
                         <form id="addPageForm">
                             @csrf
+
                             <div class="mb-3">
-                                <label for="name_ar" class="form-label">Name (AR)</label>
-                                <input type="text" class="form-control" id="name_ar" name="name_ar" required>
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <div class="mb-3">
-                                <label for="name_en" class="form-label">Name (EN)</label>
-                                <input type="text" class="form-control" id="name_en" name="name_en" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="description_ar" class="form-label">Description (AR)</label>
-                                <textarea class="form-control" id="description_ar" name="description_ar"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="description_en" class="form-label">Description (EN)</label>
-                                <textarea class="form-control" id="description_en" name="description_en"></textarea>
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control" id="description" name="description"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Page</button>
                         </form>
@@ -113,8 +97,7 @@
 
         $('#addPageForm').on('submit', function(e) {
             e.preventDefault();
-            const selectedLanguage = $('#languageSelect').val(); // Get selected language
-            const data = $(this).serialize() + '&language=' + selectedLanguage; // Append language to data
+            const data = $(this).serialize() ;
 
             $.ajax({
                 url: "{{ route('pages.store') }}",
@@ -127,22 +110,6 @@
                 error: function(xhr) {
                     // Handle errors here
                     console.log(xhr.responseText);
-                }
-            });
-        });
-
-        // Change the displayed language based on selection
-        $('#languageSelect').change(function() {
-            const selectedLanguage = $(this).val();
-            $('#pagesTable tbody tr').each(function() {
-                const nameEn = $(this).find('.name_en').text();
-                const nameAr = $(this).find('.name_ar').text();
-                if (selectedLanguage === 'en') {
-                    $(this).find('td:nth-child(2)').text(nameEn);
-                    $(this).find('td:nth-child(3)').text(''); // Clear Arabic name
-                } else {
-                    $(this).find('td:nth-child(2)').text(''); // Clear English name
-                    $(this).find('td:nth-child(3)').text(nameAr);
                 }
             });
         });
