@@ -39,7 +39,6 @@ class ApiController extends Controller
 
 
         public function apiAllProject() {
-        $defaultLanguage = defaultLanguage();
         $project = Project::with(['category' ,'images' ])->get();
         return response()->json([
             'status' => true,
@@ -48,7 +47,6 @@ class ApiController extends Controller
     }
 
     public function getIdProject($id) {
-        $defaultLanguage = defaultLanguage();
         $project = Project::where('id' ,$id)->with(['category' ,'images' ])->get();
         return response()->json([
             'status' => true,
@@ -80,7 +78,7 @@ class ApiController extends Controller
 
 
         return response()->json([
-            'name' => $page->nameLanguage(),
+            'name' => $page->name,
             'description' => $page->description,
             'meta' => $page->meta,
         ]);
