@@ -28,144 +28,33 @@ class ApiController extends Controller
         ]);
     }
 
-
-    public function getCategory() {
-        $data =  Category::select(['id','name','title'])->get();
+    public function indexPage()
+    {
+        $pages = Page::all(['id', 'name', 'type']);
         return response()->json([
-            'status' => true,
-            'data' => $data,
-        ]);
+            'status' => 'success',
+            'data' => $pages
+        ], 200);
     }
 
+    public function showPage($id) {
+        $page = Page::find($id);
 
-        public function apiAllProject() {
-        $project = Project::with(['category' ,'images' ])->get();
-        return response()->json([
-            'status' => true,
-            'data' => $project,
-        ]);
-    }
-
-    public function getIdProject($id) {
-        $project = Project::where('id' ,$id)->with(['category' ,'images' ])->get();
-        return response()->json([
-            'status' => true,
-            'data' => $project,
-        ]);
-    }
-
-
-        // Fetch a specific blog by ID with translations
-        public function getBlogId(Request $request)
-        {
-            $blog = Blog::where('id', $request->blog_id)->first();
-            return ['blog' => $blog ?? 'Blog not found'];
+        if (!$page) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Page not found'
+            ], 404);
         }
 
-
-    // Fetch all blogs with translations
-    public function getBlogs(Request $request)
-    {
-        $blogs = Blog::all();
-        return ['blogs' => $blogs ?? []];
-    }
-
-
-
-    public function showPage($id, Request $request)
-    {
-        $page = Page::findOrFail($id);
-
-
+        // إرجاع تفاصيل الصفحة
         return response()->json([
-            'name' => $page->name,
-            'description' => $page->description,
-            'meta' => $page->meta,
-        ]);
+            'status' => 'success',
+            'data' => $page
+        ], 200);
     }
 
 
-
-
-
-    public function getPage(Request $request) {
-        $pages = Page::all();
-        $data = [];
-
-        foreach ($pages as $page) {
-
-            $data[] = [
-                'id' => $page->id,
-                'name' => $page->name,
-                'meta' => $page->meta ?? '',
-            ];
-        }
-
-        if (empty($data)) {
-            return response()->json(['error' => 'Pages not found'], 404);
-        }
-
-        return response()->json($data);
-    }
-
-    public function successPartners()
-    {
-        $partners = SuccessPartner::all();
-        return response()->json([
-            'status' => true,
-            'data' => $partners,
-        ]);
-    }
-
-    public function viewImage(Request $request, $modelName)
-    {
-        try {
-            if (empty($request->nameVar)) {
-                throw new \Exception('Image variable not specified');
-            } else {
-                $nameVar = $request->nameVar;
-            }
-
-
-            if ($modelName == 'Setting') {
-                $model = Setting::where('slug', $nameVar)->first();
-
-                $imagePath = $model->value;
-            } else {
-                if (!class_exists($modelName)) {
-                    throw new \Exception('Model not found');
-                }
-                $model = resolve($modelName);
-
-                // تحميل النموذج ديناميكيًا
-
-                // البحث عن السجل باستخدام المعرف
-                $record = $model::find($request->id);
-                if (!$record) {
-                    throw new \Exception('Record not found');
-                }
-
-                $imagePath = $record->$nameVar;
-                if (!Storage::exists($imagePath)) {
-                    throw new \Exception('Image not found');
-                }
-            }
-
-
-
-            // عرض الصورة
-            return response()->file(storage_path('app/' . $imagePath), [
-                'Content-Type' => Storage::mimeType($imagePath),
-                'Content-Disposition' => 'inline',
-            ]);
-        } catch (\Exception $e) {
-            // عرض الصورة الافتراضية في حالة حدوث خطأ
-            return response()->file(storage_path('app/default_large.png'), [
-                'Content-Type' => 'image/png',
-                'Content-Disposition' => 'inline',
-            ]);
-        }
-    }
 
     public function ContactStore(Request $request)
     {

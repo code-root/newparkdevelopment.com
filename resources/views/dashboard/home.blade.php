@@ -9,54 +9,51 @@
 
 @section('body')
 <div class="content-wrapper">
+
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="container">
-            <h2>Statistics</h2>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Projects</h5>
-                            <p class="card-text">{{ $project }}</p>
-                        </div>
-                    </div>
-                </div>
+        <h4 class="fw-bold py-3 mb-4">Contact Messages</h4>
 
+        <div class="card">
+            <div class="table-responsive text-nowrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Message</th>
+                            <th>Received At</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                        @forelse($messages as $index => $message)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $message->name }}</td>
+                                <td>{{ $message->email }}</td>
+                                <td>{{ $message->phone }}</td>
+                                <td>{{ Str::limit($message->message, 50) }}</td>
+                                <td>{{ $message->created_at->format('Y-m-d H:i') }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">No messages found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+        </div>
 
+        <div class="mt-3">
+            {{ $messages->links() }}
         </div>
     </div>
+
 </div>
 @endsection
 
 @section('footer-script')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#ordersTable').DataTable();
 
-        var ctx = document.getElementById('ordersChart').getContext('2d');
-        var ordersChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: @json($deviceOrders->pluck('device_type')),
-                datasets: [{
-                    label: 'Orders by Device Type',
-                    data: @json($deviceOrders->pluck('total')),
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    });
-</script>
 @endsection

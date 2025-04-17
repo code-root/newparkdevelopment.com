@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}" class="light-style layout-navbar-fixed layout-menu-fixed layout-compact "
-    dir="ltr" data-theme="theme-default" data-assets-path="../backend/assets/dashboard/"
+    dir="ltr" data-theme="theme-default" data-assets-path="../assets/dashboard/"
     data-template="vertical-menu-template">
 
 <head>

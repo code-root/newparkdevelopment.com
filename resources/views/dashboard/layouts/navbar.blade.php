@@ -7,7 +7,7 @@
             <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
                 <div class="app-brand demo ">
                     <a href="" class="app-brand-link">
-                        <span class="app-brand-logo demo"><img src="/backend/storage/app/public/{{ $loginUser->avatar }}"  alt="{{ $loginUser->name }}"  class="w-px-40 h-auto rounded-circle"></span><span class="app-brand-text demo menu-text ms-2" style="font-size: 100%;font-weight: bold;font-family: sans-serif;color: #364f50;">{{ $loginUser->name }}</span></a>
+                        <span class="app-brand-text demo menu-text ms-2" style="font-size: 100%;font-weight: bold;font-family: sans-serif;color: #364f50;">{{ $loginUser->name }}</span></a>
                     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
                         <i class="bx bx-chevron-left bx-sm align-middle"></i></a>
                 </div>
@@ -23,26 +23,38 @@
                         </a>
                     </li>
 
-                    <li class="menu-item" data-path="{{ route('gallery.index') }}">
-                        <a href="{{ route('gallery.index') }}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-gallery"></i>
-                            <div class="text-truncate" data-i18n="gallery">gallery</div>
+
+                    <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                            <i class="menu-icon tf-icons bx bx-file"></i>
+                            <div class="text-truncate" data-i18n="Pages">Pages</div>
                         </a>
-                    </li>
-
-                <li class="menu-item" data-path="{{ route('pages.index') }}">
-                    <a href="{{ route('pages.index') }}" class="menu-link">
-                        <i class="menu-icon tf-icons bx bx-page"></i>
-                        <div class="text-truncate" data-i18n="Pages">Pages</div>
-                    </a>
-                </li>
-
-
-                <li class="menu-item" data-path="{{ route('contacts.index') }}">
-                        <a href="{{ route('contacts.index') }}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-phone"></i>
-                            <div class="text-truncate" data-i18n="Contacts">Contacts</div>
-                        </a>
+                        <ul class="menu-sub">
+                            <li class="menu-item">
+                                <a href="{{ route('pages.index', ['type' => 'regular']) }}" class="menu-link">
+                                    <i class="bx bx-file-blank me-1"></i>
+                                    <div class="text-truncate">Regular Pages</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{{ route('pages.index', ['type' => 'section']) }}" class="menu-link">
+                                    <i class="bx bx-layout me-1"></i>
+                                    <div class="text-truncate">Sections</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{{ route('pages.index', ['type' => 'article']) }}" class="menu-link">
+                                    <i class="bx bx-news me-1"></i>
+                                    <div class="text-truncate">Articles</div>
+                                </a>
+                            </li>
+                            <li class="menu-item">
+                                <a href="{{ route('pages.create') }}" class="menu-link">
+                                    <i class="bx bx-plus-circle me-1"></i>
+                                    <div class="text-truncate">Add New Page</div>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
                     <li class="menu-item" data-path="{{ route('settings.index') }}">
@@ -50,82 +62,6 @@
                             <i class="menu-icon tf-icons bx bx-cog"></i>
                             <div class="text-truncate" data-i18n="Settings">Settings</div>
                         </a>
-                    </li>
-
-
-                    <!-- Category -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-category"></i>
-                            <div class="text-truncate" data-i18n="Category">Category</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="{{ route('category.index') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="View">View</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="{{ route('category.create') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Add">Add</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-briefcase"></i>
-                            <div class="text-truncate" data-i18n="project">project</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="{{ route('project.index') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="View">View</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="{{ route('project.create') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Add">Add</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="menu-item">
-                        <a href="{{ route('success_partners.index') }}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-party"></i>
-                            <div class="text-truncate" data-i18n="Success Partners">Success Partners </div>
-                        </a>
-                    </li>
-
-                    <li class="menu-item">
-                        <a href="{{ route('blog.index') }}" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-image"></i>
-                            <div class="text-truncate" data-i18n="Blogs ">Blogs </div>
-                        </a>
-                    </li>
-
-
-
-                    <!-- FAQ -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-question-mark"></i>
-                            <div class="text-truncate" data-i18n="FAQ">FAQ</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="{{ route('faq.index') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="View">View</div>
-                                </a>
-                            </li>
-                            <li class="menu-item">
-                                <a href="{{ route('faq.create') }}" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Add">Add</div>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
 
                 </ul>

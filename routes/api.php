@@ -3,7 +3,6 @@
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SubscriberController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,17 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/project', [ApiController::class, 'apiAllProject']);
-Route::get('/project/{id}', [ApiController::class, 'getIdProject']);
 Route::get('home', [ApiController::class, 'home'])->name('api.home');
 Route::post('contact-post', [ApiController::class, 'ContactStore'])->name('contact.store');
-Route::get('/page/{id}', [ApiController::class, 'showPage'])->name('api.showPage');
-Route::get('/pages', [ApiController::class, 'getPage'])->name('api.getPage');
-
-Route::get('/blogs', [APIController::class, 'getBlogs'])->name('blogs.get');
-Route::get('/blog/{blog_id}', [APIController::class, 'getBlogId'])->name('blog.getById');
-Route::get('getCategory', [APIController::class, 'getCategory'])->name('getCategory');
-Route::get('success-partners', [APIController::class, 'successPartners'])->name('API.successPartners');
 
 
-Route::post('/subscribe', [SubscriberController::class, 'subscribe']);
+Route::get('/pages', [PageController::class, 'indexPage']);
+Route::get('/page/{id}', [PageController::class, 'showPage']);

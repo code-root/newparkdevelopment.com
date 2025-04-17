@@ -26,19 +26,7 @@ class SettingsController extends Controller
             'about_us' => 'nullable|string',
             'about_intro' => 'nullable|string',
             'about_mission' => 'nullable|string',
-            'faq_title' => 'nullable|string|max:255',
-            'hero_cta' => 'nullable|string|max:255',
-            'rental_stats_count' => 'nullable|string|max:255',
-            'rental_stats_text' => 'nullable|string|max:255',
-            'google_maps' => 'nullable',
-            'buy_stats_count' => 'nullable|string|max:255',
-            'buy_stats_text' => 'nullable|string|max:255',
-            'hero_subtitle' => 'nullable|string|max:255',
-            'hero_title_1' => 'nullable|string|max:255',
-            'hero_title_2' => 'nullable|string|max:255',
-            'hero_description' => 'nullable|string|max:255',
-            'slider_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // صورة السلايدر
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // الشعار
+
         ]);
 
         $settingsData = $request->except(['_token', 'slider_image', 'logo']);
