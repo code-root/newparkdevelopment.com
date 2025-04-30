@@ -112,7 +112,7 @@
                                     <div class="row">
                                         @foreach($page->images as $image)
                                             <div class="col-md-2 mb-3" id="image-{{ $image->id }}">
-                                                <img src="/backend/storage/{{  $image->image }}" class="img-fluid" />
+                                                <img src="/backend/storage/app/public/{{  $image->image }}" class="img-fluid" />
                                                 <button type="button" class="btn btn-danger btn-sm mt-1 delete-image" data-id="{{ $image->id }}">Delete</button>
                                             </div>
                                         @endforeach

@@ -3,14 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
-use App\Models\Project;
 use App\Models\Setting;
-use App\Models\site\Faq;
 use App\Models\site\Page;
 use Illuminate\Http\Request;
-use App\Models\site\SuccessPartner;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Blog\Blog;use App\Models\site\Category;
 
 class ApiController extends Controller
 {
@@ -20,17 +15,24 @@ class ApiController extends Controller
     {
         $settings = Setting::pluck('value', 'slug')->toArray();
         $socials = Setting::whereIn('slug', ['facebook', 'instagram', 'linkedin', 'twitter' , 'google_maps' , 'email' , 'site_name' , 'whatsapp' , 'phone'])->pluck('value', 'slug')->toArray();
-        $faqs = Faq::all();
         return response()->json([
             'settings' => $settings,
             'socials' => $socials,
-            'faqs' => $faqs,
         ]);
+    }
+
+    public function getPageType($type)
+    {
+        $pages = Page::select(['id', 'name', 'type'])->with(['images'])->where('type', $type)->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $pages
+        ], 200);
     }
 
     public function indexPage()
     {
-        $pages = Page::all(['id', 'name', 'type']);
+        $pages = Page::select(['id', 'name', 'type'])->with(['images'])->get();
         return response()->json([
             'status' => 'success',
             'data' => $pages

@@ -13,6 +13,7 @@ class Page extends Model {
         'meta',
         'description',
         'name',
+        'type' ,
         'slug',
         'meta_title',
         'meta_description',

@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\dashboard\site\PageController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,5 +24,7 @@ Route::get('home', [ApiController::class, 'home'])->name('api.home');
 Route::post('contact-post', [ApiController::class, 'ContactStore'])->name('contact.store');
 
 
-Route::get('/pages', [PageController::class, 'indexPage']);
-Route::get('/page/{id}', [PageController::class, 'showPage']);
+Route::get('/pages', [ApiController::class, 'indexPage']);
+Route::get('/page/{id}', [ApiController::class, 'showPage']);
+Route::get('/getPageType/{type}', [ApiController::class, 'getPageType']);
+

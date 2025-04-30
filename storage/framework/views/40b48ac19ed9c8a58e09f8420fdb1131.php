@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRE-aMi84EF0rE7n1UO-NleqVM0-kW5BZzNA&s">
-    <title>{{ config('app.name') }} | @yield('title' , '') </title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title><?php echo e(config('app.name')); ?> | <?php echo $__env->yieldContent('title' , ''); ?> </title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700;800;900&amp;family=Nunito+Sans:ital,opsz,wght@0,6..12,200;0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;0,6..12,800;0,6..12,900;0,6..12,1000;1,6..12,200;1,6..12,300;1,6..12,400;1,6..12,500;1,6..12,600;1,6..12,700;1,6..12,800;1,6..12,900;1,6..12,1000&amp;display=swap" rel="stylesheet">
@@ -21,5 +21,6 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://sadaadd.com/static/media/logo.2a288f71c5d32e47c6b8.png">
 </head>
   <body>
-    @yield('content')
+    <?php echo $__env->yieldContent('content'); ?>
 
+<?php /**PATH /Users/macstoreegypt/Documents/Projects/sadaadd.com/resources/views/dashboard/auth/layouts/app.blade.php ENDPATH**/ ?>

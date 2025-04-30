@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class PageController extends Controller
 {
-    
+
     public function index(Request $request)
     {
         $query = Page::query();
@@ -56,7 +56,6 @@ class PageController extends Controller
             'description' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'type' => 'required|in:regular,section,article',
-
             'meta_description' => 'nullable|string|max:500',
         ]);
 
@@ -84,7 +83,6 @@ class PageController extends Controller
             'meta_description' => 'nullable|string|max:500',
         ]);
 
-        // إنشاء slug تلقائياً إذا لم يتم تقديمه
         $data['slug'] = Str::slug($request->slug ?? $request->name);
 
         $page = Page::create($data);

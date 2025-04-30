@@ -26,8 +26,8 @@
                         @csrf
                         <h3>Sign in to account</h3>
                         <p>Enter your email & password to login</p>
-                        <a class="logo" href=""><img class="img-fluid for-light" src="{{ route('view-image', ['m' => 'Setting', 'id' => 0, 'nameVar' => 'logo']) }}" alt="looginpage" width="60%">
-                            <img class="img-fluid for-dark" src="{{ route('view-image', ['m' => 'Setting', 'id' => 0, 'nameVar' => 'logo']) }}"  width="10%" alt="looginpage"></a>
+                        <a class="logo" href=""><img class="img-fluid for-light" src="https://sadaadd.com/static/media/logo.2a288f71c5d32e47c6b8.png" alt="looginpage" width="60%">
+                            <img class="img-fluid for-dark" src="icon"  width="10%" alt="looginpage"></a>
 
                         <div class="form-group">
                             <label for="emailaddress">Email address</label>
@@ -39,7 +39,7 @@
                         @enderror
                         </div>
                         <div class="form-group">
-                            <a href="{{ route('password.request') }}" class="text-muted float-right"><small>Forgot your password?</small></a>
+                            {{-- <a href="{{ route('password.request') }}" class="text-muted float-right"><small>Forgot your password?</small></a> --}}
                             <label for="password">Password</label>
                             <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
 

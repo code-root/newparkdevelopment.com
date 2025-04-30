@@ -68,6 +68,7 @@ use App\Http\Controllers\dashboard\BlogController;
         Route::resource('/pages', PageController::class);
         // pages.check-slug
         Route::post('/pages/check-slug', [PageController::class, 'checkSlug'])->name('pages.check-slug');
+        Route::post('/pages/{id}', [PageController::class, 'update'])->name('pages.update');
 
 
 
