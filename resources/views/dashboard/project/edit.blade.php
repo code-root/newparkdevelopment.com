@@ -146,7 +146,7 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ route('image.delete') }}",
+                    url: "{{ route('projectImage.delete') }}",
                     type: 'POST',
                     data: {
                         '_token': '{{ csrf_token() }}',

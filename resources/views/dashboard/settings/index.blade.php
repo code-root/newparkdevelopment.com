@@ -79,6 +79,12 @@
                                     {{ Form::label('google_maps', 'google_maps') }}
                                     {{ Form::text('google_maps', $basic['google_maps'] ?? '', ['class' => 'form-control', 'id' => 'google_maps', 'required' => true]) }}
                                 </div>
+                                <div class="row mb-3">
+                                <div class="col-md-6">
+                                    {{ Form::label('faq_title', 'Name Maps') }}
+                                    {{ Form::text('faq_title', $settings['faq_title'] ?? '', ['class' => 'form-control', 'id' => 'name_maps', 'required' => true]) }}
+                                </div>
+                            </div>
                                 <div class="col-md-4">
                                     {{ Form::label('phone', 'Phone Number') }}
                                     {{ Form::text('phone', $basic['phone'] ?? '', ['class' => 'form-control', 'id' => 'phone', 'required' => true]) }}
@@ -137,7 +143,7 @@
                                     <img src="https://newparkdevelopment.com/backend/storage/app/{{   $basic['slider_image'] }}" alt="Slider Image" class="img-thumbnail mt-2" width="150">
                                 @endif
                             </div>
-
+                        
                             <div class="mb-3">
                                 {{ Form::label('hero_subtitle', 'العنوان الفرعي') }}
                                 {{ Form::text('hero_subtitle', $basic['hero_subtitle'] ?? 'اكتشف العقارات الآن بكل سهولة', ['class' => 'form-control', 'id' => 'hero_subtitle']) }}
@@ -195,12 +201,14 @@
                                     {{ Form::text('meta_keywords', $settings['meta_keywords'] ?? '', ['class' => 'form-control', 'id' => 'meta_keywords', 'required' => true]) }}
                                 </div>
                             </div>
+                      
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     {{ Form::label('meta_description', 'Meta Description') }}
                                     {{ Form::textarea('meta_description', $settings['meta_description'] ?? '', ['class' => 'form-control', 'rows' => '3', 'id' => 'meta_description', 'required' => true]) }}
                                 </div>
                             </div>
+                 
                         </div>
                     </div>
                 </div>

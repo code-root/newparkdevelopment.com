@@ -10,7 +10,7 @@ use App\Models\Translation;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\ProjectRequest;
-
+use Illuminate\Support\Facades\Storage;
 class ProjectController extends Controller
 {
     public function getProjectRequest() {
@@ -46,7 +46,7 @@ class ProjectController extends Controller
     public function createPage()
     {
         return view('dashboard.project.add')
-            ->with('token', Translation::generateUniqueToken())
+            // ->with('token', Translation::generateUniqueToken())
             ->with('categories', Category::get());
     }
 
@@ -69,7 +69,7 @@ class ProjectController extends Controller
             'count' => 'required|integer',
             'category_id' => 'required|integer|exists:categories,id',
             'status' => 'required|string|in:active,inactive',
-            'price' => 'required|numeric',
+            // 'price' => 'null|numeric',
             'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -86,7 +86,7 @@ class ProjectController extends Controller
             'count' => $request->count,
             'category_id' => $request->category_id,
             'status' => $request->status,
-            'price' => $request->price,
+            'price' => $request->price ?? 0,
             'image' => $imagePath,
         ]);
 
@@ -121,12 +121,12 @@ class ProjectController extends Controller
             'count' => 'required|integer',
             'category_id' => 'required|integer|exists:categories,id',
             'status' => 'required|string|in:active,inactive',
-            'price' => 'required|numeric',
+            // 'price' => 'required|numeric',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $project = Project::findOrFail($id);
-        $project->update($request->only(['name', 'title', 'description', 'count', 'category_id', 'status', 'price']));
+        $project->update($request->only(['name', 'title', 'description', 'count', 'category_id', 'status']));
 
         if ($request->hasFile('images')) {
             $firstImage = $request->file('images')[0];
@@ -144,7 +144,7 @@ class ProjectController extends Controller
             }
         }
 
-        return redirect()->route('project.index')->with('success', 'Project updated successfully');
+       return response()->json(['success' => 'Project updated successfully.']);
     }
 
     public function destroy(Request $request)
@@ -164,7 +164,7 @@ class ProjectController extends Controller
         return response()->json(['success' => 'Project status updated successfully.']);
     }
 
-    public function projectImageDelete () 
+    public function projectImageDelete(Request $request)
     {
         $image = ProjectImage::find($request->id);
         if ($image) {

@@ -85,7 +85,6 @@
                                     <input type="file" id="images" name="images[]" class="form-control" multiple required>
                                 </div>
                             </div>
-                            <input type="hidden" id="token" name="token" value="{{ $token }}" class="form-control">
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Add New Project</button>
@@ -107,7 +106,6 @@ tinymce.init({
     branding: false
 });
 
-const token = "{{ $token }}";
 $.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
