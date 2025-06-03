@@ -64,6 +64,31 @@
                                         </div>
                                     </div>
 
+                                           <!-- SEO Maps -->
+                                           <div class="mb-4">
+                                            <h5 class="mb-3">Maps Settings</h5>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="meta_title" class="form-label">Maps Title</label>
+                                                        <input type="text" id="title_maps" name="title_maps" class="form-control" value="" placeholder="Title for search engines (50-60 characters)">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="meta_description" class="form-label">Maps Link</label>
+                                                        <textarea id="link_maps" name="link_maps" class="form-control" rows="3" placeholder="link_maps for search engines (150-160 characters)"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <label for="images" class="form-label">Page Images</label>
+                                                <input type="file" name="images[]" id="images" class="form-control" multiple>
+                                            </div>
+                                        </div>
+
                                     <!-- SEO Section -->
                                     <div class="mb-4">
                                         <h5 class="mb-3">SEO Settings</h5>

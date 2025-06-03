@@ -18,6 +18,8 @@ class Page extends Model {
         'meta_title',
         'meta_description',
         'status',
+        'title_maps',
+        'link_maps',
     ];
 
     public function images()

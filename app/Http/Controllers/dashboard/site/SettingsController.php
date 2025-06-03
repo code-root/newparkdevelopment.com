@@ -12,7 +12,7 @@ class SettingsController extends Controller
     public function index()
     {
         $settings = Setting::where('type', '!=', 'basic')->pluck('value', 'slug')->toArray();
-        $basic = Setting::where('type', 'basic')->pluck('value', 'slug')->toArray();
+        $basic = Setting::pluck('value', 'slug')->toArray();
         return view('dashboard.settings.index', compact('settings', 'basic'));
     }
 

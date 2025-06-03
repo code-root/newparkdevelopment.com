@@ -40,7 +40,7 @@ class ApiController extends Controller
     }
 
     public function showPage($id) {
-        $page = Page::find($id);
+        $page = Page::where('id',$id)->with(['images'])->first();
 
         if (!$page) {
             return response()->json([

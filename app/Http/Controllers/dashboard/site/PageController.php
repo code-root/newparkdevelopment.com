@@ -56,7 +56,10 @@ class PageController extends Controller
             'description' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'type' => 'required|in:regular,section,article',
+            'title_maps' => 'nullable|string',
+            'link_maps' => 'nullable|string',
             'meta_description' => 'nullable|string|max:500',
+
         ]);
 
         $page = Page::findOrFail($id);
@@ -81,6 +84,8 @@ class PageController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'type' => 'required|in:regular,section,article',
             'meta_description' => 'nullable|string|max:500',
+            'title_maps' => 'nullable|string',
+            'link_maps' => 'nullable|string',
         ]);
 
         $data['slug'] = Str::slug($request->slug ?? $request->name);
